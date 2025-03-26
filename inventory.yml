@@ -1,8 +1,22 @@
-test:
+remote:
+  # hosts:
+  #   digitalocean_1:
+  #     ansible_host: 159.65.225.4
+  vars:
+    ansible_user: mateo      
+
+local:      
   hosts:
-    10.5.0.2:
-      ansible_user: mrodrigu
-    10.5.0.3:
-      ansible_user: mrodrigu
-    10.5.0.4:
-      ansible_user: mrodrigu
+    local_1:
+      ansible_host: 10.5.0.2
+    local_2:
+      ansible_host: 10.5.0.3
+    local_3:
+      ansible_host: 10.5.0.4
+  vars:
+    ansible_user: mrodrigu
+
+all:
+  children: 
+    remote:
+    local:

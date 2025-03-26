@@ -1,0 +1,32 @@
+version: 3
+
+images:
+  base_image:
+    name: quay.io/fedora/fedora:39
+
+dependencies:
+  ansible_core:
+    package_pip: ansible-core
+  ansible_runner:
+    package_pip: ansible-runner
+  system:
+  - openssh-clients
+  - sshpass
+  galaxy:
+    collections:
+    - name: community.postgresql
+
+# NOTE: This is not necessary as the ansible-navigator already copies by default
+# the user ssh credential into the container. But serves as a temporary example
+# of how to copy aditional files
+
+# additional_build_files:
+#   - src: /home/mateo/.ssh/id_ed25519.pub
+#     dest: files
+#   - src: /home/mateo/.ssh/id_ed25519
+#     dest: files
+  
+# additional_build_steps:
+#   prepend_base:
+#     - COPY _build/files/id_ed25519.pub /runner/.ssh/id_ed25519.pub
+#     - COPY _build/files/id_ed25519 /runner/.ssh/id_ed25519
