@@ -1,0 +1,27 @@
+services:
+  node1:
+    container_name: node_1
+    build: 
+      context: .
+      args:
+        USER: fumon
+    networks:
+      nw:
+        ipv4_address: 10.2.0.2
+  node2:
+    container_name: node_2
+    build: 
+      context: .
+      args:
+        USER: fumon
+    networks:
+      nw:
+        ipv4_address: 10.2.0.4        
+
+
+networks:
+  nw:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 10.2.0.0/16

@@ -1,0 +1,27 @@
+# Playbook execution
+
+# Execiton environment
+python -m venv .venv
+source ./.venv/bin/activate
+pip install ansible-navigator ansible-builder
+
+execution-environment-yml:
+```yaml
+version: 3
+
+images:
+  base_image:
+    name: quay.io/fedora/fedora:39
+
+dependencies:
+  ansible_core:
+    package_pip: ansible-core
+  ansible_runner:
+    package_pip: ansible-runner
+  system:
+  - openssh-clients
+  - sshpass
+  galaxy:
+    collections:
+    - name: community.postgresql
+```
