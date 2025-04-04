@@ -1,0 +1,7 @@
+- name: Deploy server into host
+  hosts: localhosts
+  roles:
+    - nginx
+    - postgres
+    - php
+    - phpmyadmin

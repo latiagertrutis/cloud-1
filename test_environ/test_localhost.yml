@@ -1,0 +1,8 @@
+- name: Stalker
+  hosts: localhost
+  become: true
+  gather_facts: true
+  tasks:
+  - name: Gatherer Of Data.
+    debug:
+      var: ansible_facts
