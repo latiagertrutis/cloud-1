@@ -18,3 +18,10 @@ Notice:
 * `pull-policy` missing to only pull if the container does not exist.
 * `--container-options='<test-network>'`to have acces to the test containers in you host machine.
 * A separated `--container-options='--user=0'`to specify user.
+
+## Useful links
+Docker container management with Ansible
+- https://medium.com/@Oskarr3/docker-containers-with-ansible-89e98dacd1e2
+
+How to use Terraform with DigitalOcean
+- https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean
