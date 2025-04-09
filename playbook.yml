@@ -1,6 +1,4 @@
-- name: A play
-  hosts: all
-  tasks:
-  - name: Print facts
-    ansible.builtin.debug:
-      var: ansible_facts
+- name: nginx
+  hosts: local_1
+  roles:
+    - nginx

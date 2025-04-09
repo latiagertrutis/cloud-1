@@ -25,3 +25,28 @@ Docker container management with Ansible
 
 How to use Terraform with DigitalOcean
 - https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean
+
+
+## Set environment variables for a command, a good way
+
+Load variables from a .env
+```
+- name: Load .env as a fact
+  set_fact:
+    env_vars: "{{ lookup('ini', role_path + '/.env') }}"
+```
+
+or one by one
+```
+environment:
+  APP_ENV: "{{ lookup('ini', 'APP_ENV file=' + role_path + '/.env') }}"
+```
+
+Then use the fact to set the environment variables in the command
+```
+- name: Use env vars in a command
+  command: ./run-app.sh
+  environment:
+    APP_ENV: "{{ env_vars.APP_ENV }}"
+    DB_HOST: "{{ env_vars.DB_HOST }}"
+```

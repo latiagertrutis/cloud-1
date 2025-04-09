@@ -1,0 +1,14 @@
+- name: Create Nginx Dockerfile
+  template:
+    src: "Dockerfile.j2"
+    dest: "{{ resources_dir }}/Dockerfile"
+
+- name: Provide Certificate
+  copy:
+    src: "cert.pem"
+    dest: "{{ ssl_cert }}"
+    
+- name: Provide Key
+  copy:
+    src: "key.pem"
+    dest: "{{ ssl_key }}"

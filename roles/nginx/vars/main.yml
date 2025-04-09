@@ -1,0 +1,3 @@
+resources_dir: /resources
+ssl_cert: "{{ resources_dir }}/cert.pem"
+ssl_key: "{{ resources_dir }}/key.pem"
