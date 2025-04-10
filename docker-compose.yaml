@@ -4,15 +4,8 @@ services:
     build: 
       context: .
       args:
-        SSH_USER: fumon
-      dockerfile_inline: |
-        FROM ubuntu:20.04
-        ARG SSH_USER=fumon
-        RUN apt-get update && apt-get install -y openssh-server
-        RUN useradd $${SSH_USER} -m
-        COPY ./authorized_keys.pub /home/$${SSH_USER}/.ssh/authorized_keys
-        RUN mkdir -pv /run/sshd
-        CMD /usr/sbin/sshd -D
+        SSH_USER: ${SSH_USER}
+        ROOT_PWD: ${ROOT_PASSWORD}
     networks:
       nw:
         ipv4_address: 10.2.0.2
@@ -21,32 +14,20 @@ services:
     build: 
       context: .
       args:
-        SSH_USER: fumon
-      dockerfile_inline: |
-        FROM ubuntu:20.04
-        ARG SSH_USER=fumon
-        RUN apt-get update && apt-get install -y openssh-server
-        RUN useradd $${SSH_USER} -m
-        COPY ./authorized_keys.pub /home/$${SSH_USER}/.ssh/authorized_keys
-        RUN mkdir -pv /run/sshd
-        CMD /usr/sbin/sshd -D
-      
+        SSH_USER: ${SSH_USER}
+        ROOT_PWD: ${ROOT_PASSWORD}
     networks:
       nw:
         ipv4_address: 10.2.0.4        
 
-#  terraform_node:
-#    container_name: terraform
-#    build:
-#      context: .
-#      dockerfile_inline: |
-#        FROM debian:bookworm-slim
-#        RUN apt update && apt install -y wget
-#        RUN wget -O - https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-#            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list \
-#            && apt install terraform
-#    networks:
-#      nw:
+  terraform_node:
+    container_name: terraform
+    command: sleep infinity
+    build:
+      context: .
+      dockerfile: terraform.Dockerfile
+    networks:
+      nw:
 
 
 networks:

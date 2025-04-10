@@ -1,10 +1,8 @@
 [localhosts]
-10.2.0.2
-10.2.0.4
+64.227.35.245
 
 [localhosts:vars]
 ansible_user=fumon
-anisble_connection=ssh
 ansible_ssh_private_key_file=/home/danielrodriguez/Workspace/cloud-1/authorized_keys
 ansible_become_user=root
 ansible_become_method=su

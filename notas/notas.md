@@ -165,14 +165,89 @@ Ansible intenta buscar un archivo `main.yml` en cada directorio.
 
 Ningún archivo es requerido para la definición de un rol.
 Cómo se ejecutan en cascada todas las tareas de todos los roles, cuando sólo se debería hacer una llamada a un único playbook?
+
+Entendamos el rol como una unidad portable y autocontenida de automatización. 
+Se pueden incluir los roles llamándolos en playbooks, listándolos en la sección de roles o con los parámetros `include_role` o `import_role`.
+
 # Handlers
+Ejecución de operaciones tras cambios.
+
+(( ejemplo ))
 
 # Defaults
+Nos permite setear argumentos por defecto en distintos módulos. Instanciables a nivel de tarea, play y bloque.
+```yaml
+- hosts: localhost
+  module_defaults:
+    ansible.builtin.file:
+      owner: root
+      group: root
+      mode: 0755
+```
 
 # Templates
+Generación de archivos de configuración usando lenguaje `jinja2` de forma dinámica, para generar config. con variables de entorno.
 
-# Ansible playbook apt module
+Usamos el módulo `template` para 
+
+# Loops
+
+
+
+# Ansible: become
+Ejecuta los comandos como sudo. Requiere una configuración previa. La directiva `become` inicia el escalado de privilegios.
+Las variables de configuración para become son:
+- `ansible_become_method`: Para el método de escalado de privilegios
+- `anisble_become_user`: El usuario para escalado
+- 
+
+# Ansible: connections
+Mecanismos para gestionar hosts remotos.
+- SSH
+- WinRM
+- Local
+- Docker
+
+# Módulos
+
+- Apt
+- Service
+- Command
+- Service_facts
+- Debug
+- Copy
+- Docker_image
+
+## Módulo: apt
+Gestión de paquetes apt.
+
+## Módulo: service
+Gestión de servicios en el nodo gestionado.
+Parámetros, `name` para seleccionar el servicio, `state` para elegir el estado deseado, `enabled` para seleccionar si el servicio se ejecuta el inicio.
+- *Service is in unknown state*
+No podemos gestionar servicios en hosts containerizados, no debe ser un problema cuando trabajemos con máquinas en cloud.
+
+## Módulo: command
+Ejecutar comandos en el nodo. `argv`, cada línea un argumento, `chdir` para escoger directorio, `creates` para crear directorios o archivos.
+
+## Módulo: service_facts
+Recibe información sobre servicios en el nodo. La lista de parámetros contiene `name`, `source` y `state`. Conveniente para condicionales con parámetro `when`.
+
+# Módulo: file
+Gestión de archivos y sistemas de archivo. Nos permite setear atributos a ficheros y directorios.
+Nos interesa `group`, `mode`
+
+# Módulo: copy
+
+# Módulo: docker_image
+
+# Flujo de trabajo
+## Ansible
+- Tarea común: configuración de usuario
+- Tarea común: instalar docker
+- Rol nginx:
 
 ## Todoes
 - Investigar `ansible-pull`
 - Investigar jinga
+- Investigar que es un facto

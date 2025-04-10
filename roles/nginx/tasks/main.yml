@@ -1,3 +1,53 @@
-#SPDX-License-Identifier: MIT-0
----
-# tasks file for nginx
+- name: Update packages to latest version
+  become: true
+  apt:
+    update_cache: true
+    upgrade: dist
+
+- name: Install docker
+  become: true
+  apt:
+    name: docker
+
+- name: Set up nginx configuation directory
+  become: true
+  file:
+    path: "{{ nginx_dockerfile_path }}"
+    state: directory
+    owner: fumon
+    group: fumon
+    mode: 0755
+
+- name: Pasar un template al asunto
+  template:
+    src: Dockerfile.j2
+    dest: "{{ nginx_dockerfile_path }}Dockerfile"
+    owner: fumon
+    group: fumon
+    mode: 0755
+
+- name: Provide nginx configuration file to host
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_dockerfile_path }}"
+
+- name: Debug var
+  debug:
+    msg: Hola, "{{ nginx_dockerfile_path }}"
+
+- name: Copy nginx resources into node
+  copy:
+    owner: fumon
+    group: fumon
+    mode: 0755
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - {src: "cert.pem", dest: "{{ nginx_dockerfile_path }}"}
+    - {src: "key.pem", dest: "{{ nginx_dockerfile_path }}"}
+    - {src: "entrypoint.sh", dest: "{{ nginx_dockerfile_path }}"}
+
+- name: Build nginx image
+  community.docker.docker_image_build:
+    path: "{{ nginx_dockerfile_path }}"
+    name: cloud1-nginx

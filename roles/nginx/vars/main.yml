@@ -1,3 +1,5 @@
-#SPDX-License-Identifier: MIT-0
----
-# vars file for nginx
+base_image: debian:bookworm-slim
+ssl_cert: cert.pem
+ssl_cert_key: key.pem
+docker_entrypoint: entrypoint.sh
+nginx_dockerfile_path: /opt/nginx/

@@ -1,4 +1,6 @@
 authorized_keys*
 .ansible
 .venv
+.env
 
+inception
