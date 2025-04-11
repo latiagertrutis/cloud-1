@@ -3,12 +3,24 @@
     src: "Dockerfile.j2"
     dest: "{{ resources_dir }}/Dockerfile"
 
-- name: Provide Certificate
+- name: Provide Files
   copy:
-    src: "cert.pem"
-    dest: "{{ ssl_cert }}"
+    src: files/
+    dest: "{{ resources_dir }}/"
+    owner: mrodrigu
+    group: mrodrigu
+    mode: '0744'
     
-- name: Provide Key
-  copy:
-    src: "key.pem"
-    dest: "{{ ssl_key }}"
+- name: Set Facts
+  set_fact:
+    domain: "{{ lookup('ini', 'DOMAIN', file='env.ini') }}"
+
+- name: Run Test
+  command: "{{ resources_dir }}/test.sh"
+  environment:
+    DOMAIN: "{{ domain }}"
+  register: run_test
+
+- debug:
+    msg: "{{ run_test.stdout }}"
+    
