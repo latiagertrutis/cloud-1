@@ -1,0 +1,4 @@
+# Tareas comunes a todos los servicios
+tasks:
+  - include_tasks: user.yml
+  - include_tasks: docker.yml

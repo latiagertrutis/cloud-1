@@ -247,7 +247,45 @@ Nos interesa `group`, `mode`
 - Tarea común: instalar docker
 - Rol nginx:
 
+
+## Gestión de dependencias usando roles
+Caso: un rol depende de la funcionalidad provista por otro rol. Las dependencias de roles están definidas en el directorio `meta`, de la siguiente forma:
+
+```toml
+dependencies:
+  - { role: common, version: "1.2.3" }
+  - { role: webserver, version: ">=2.0.0" }
+  - { role: database, tags: ["database"] }
+```
+Ansible también permite instalación de roles como paquetes, como un pip requirements en python.
+Se puede crear un archivo `requirements.yml` con el formato:
+```toml
+- src: role.package
+  version: "1.0.0."
+- src: another.role.package
+  version: "2.1.0"
+...
+```
+El cual se instala con el comando `ansible-galaxy install -r requirements.yml`.
+
+[Artsobre la gestión de dependencias](https://labexio.medium.com/how-to-manage-dependencies-in-ansible-roles-6148675bf4b8)
+
+### Versionado de roles
+
+
+### Common role
+
+## Ejecución de roles independiente desde CLI
+
+
 ## Todoes
-- Investigar `ansible-pull`
-- Investigar jinga
-- Investigar que es un facto
+- [] Investigar `ansible-pull`
+- [] Investigar jinga
+- [] Investigar que es un facto
+
+- [] provision de usuario
+    - sudo
+    - docker groups pal bicho
+    - el propio usuario, vaya (user pwd)
+- [] ejecutar por roles
+- [] que deberia haber en variables

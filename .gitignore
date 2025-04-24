@@ -2,5 +2,9 @@ authorized_keys*
 .ansible
 .venv
 .env
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
 
 inception

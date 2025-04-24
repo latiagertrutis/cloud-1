@@ -1,13 +1,30 @@
-- name: Update packages to latest version
+- name: Install docker dependencies
   become: true
   apt:
+    name: 
+      - ca-certificates
+      - curl
+      - software-properties-common
     update_cache: true
-    upgrade: dist
 
-- name: Install docker
+- name: Add Docker GPG apt key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repository
+  become: true
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
   become: true
   apt:
-    name: docker
+    name: docker-ce
+    state: latest
+    update_cache: true
 
 - name: Set up nginx configuation directory
   become: true
@@ -47,7 +64,19 @@
     - {src: "key.pem", dest: "{{ nginx_dockerfile_path }}"}
     - {src: "entrypoint.sh", dest: "{{ nginx_dockerfile_path }}"}
 
+- name: Complex command execution
+  command:
+    cmd: echo hola && echo hola && echo hola | cat | cat | cat -e
+
+- name: Enchufar usuario a grupo docker
+  become: true
+  user:
+    name: fumon
+    groups: docker
+    append: yes
+
 - name: Build nginx image
+  become: true
   community.docker.docker_image_build:
     path: "{{ nginx_dockerfile_path }}"
     name: cloud1-nginx
