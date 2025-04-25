@@ -10,12 +10,3 @@ if [ ! -d ".venv" ]; then
 else
     source ./.venv/bin/activate
 fi
-
-ROLES_DIR=roles
-mkdir -pv $ROLES_DIR
-ansible-galaxy role init postgres --init-path $ROLES_DIR
-ansible-galaxy role init nginx --init-path $ROLES_DIR
-ansible-galaxy role init php --init-path $ROLES_DIR
-ansible-galaxy role init phpmyadmin --init-path $ROLES_DIR
-
-find roles -name "README.md" -type f -delete

@@ -34,7 +34,7 @@ services:
       context: .
       dockerfile: terraform.Dockerfile
     volumes:
-      - ./terraform.local:/opt/loadbalance
+      - ./terraform.local:/opt/terraform
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       nw:
