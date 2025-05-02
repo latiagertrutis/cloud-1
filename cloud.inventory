@@ -1,5 +1,5 @@
 [localhosts]
-64.227.35.245
+157.245.106.114
 
 [localhosts:vars]
 ansible_user=fumon

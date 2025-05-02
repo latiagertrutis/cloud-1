@@ -1,0 +1,24 @@
+- name: Creación del usuario
+  user:
+    name: '{{ user }}'
+    shell: /bin/bash
+    password: '{{ user_password }}'
+    create_home: true
+    home: /home/{{ user }}
+
+- name: Instalación de sudo como método de escalado de privilegios
+  apt:
+    name: sudo
+    update_cache: true
+
+
+- name: Creación del grupo docker
+
+
+- name: Añadir usuario a los grupos docker, sudo
+  user:
+    name: '{{ user }}'
+    groups:
+      - docker
+      - sudo
+    append: true

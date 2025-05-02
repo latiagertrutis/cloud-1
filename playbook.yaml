@@ -1,6 +1,7 @@
 - name: Deploy server into host
   hosts: localhosts
   roles:
+    - common
     - nginx
     - postgres
     - php

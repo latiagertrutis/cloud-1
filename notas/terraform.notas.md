@@ -147,6 +147,33 @@ terraform {
 }
 ```
 
+
+## CLI
+- Preparación del directorio para ser usado por terraform.
+Debe existir una configuración previa en el directorio.
+Instalación de módulos y plugins, que serán guardados en la carpeta `.terraform`.
+```
+terraform init
+```
+
+- Aprovisionamiento.
+```
+terraform plan --out=FILE \            # Output a archivo
+               --destroy \             # Como terraform destroy
+               --refresh-only \        # El plan solo actualiza el estado
+               --input=false \         # Requisito en ejecuciones no interactivas
+               --var-file=FILENAME \   # Añade variables desde archivo
+               --lock=false            # No hace lock, peligroso en concurrencias
+terraform apply --auto-approve         # No interactivo, aprueba cambios
+terraform destroy # terraform apply --destroy
+```
+`plan` evalúa la configuración y genera el estado. Compara el estado actual del recurso y el estado deseado, la configuración es la diferencia.
+`apply` ejecuta un plan y lo aplica. Se le puede pasar la configuración o plan generado por el comando anterior.
+`destroy` elimina los recursos gestionados en el directorio de trabajo.
+
+- Identificación
+
+
 - on_premise
 - registries
 - concepto sensitive

@@ -1,0 +1,9 @@
+services:
+  terraform:
+    container_name: terraform_node
+    build:
+      context: .
+      dockerfile: terraform.Dockerfile
+    volumes:
+      - ./terraform/:/opt/terraform
+    command: sleep infinity
