@@ -1,0 +1,38 @@
+- name: Check If Docker Is Installed
+  shell: dpkg-query -W docker
+  register: docker_installed
+  ignore_errors: True
+  check_mode: False
+  changed_when: False
+
+- name: Stop If Docker Installed
+  meta: end_role
+  when: docker_installed.rc == 0
+
+- name: Install docker dependencies
+  become: true
+  apt:
+    name: 
+      - ca-certificates
+      - curl
+      - software-properties-common
+    update_cache: true
+
+- name: Add Docker GPG apt key
+  become: true
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repository
+  become: true
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Update apt and install docker-ce
+  become: true
+  apt:
+    name: docker-ce
+    state: latest
+    update_cache: true  

@@ -1,4 +1,4 @@
-- name: nginx
-  hosts: local_1
+- name: docker
+  hosts: digitalocean_1
   roles:
-    - nginx
+    - docker
