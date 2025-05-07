@@ -20,13 +20,13 @@ TERR_NODE=terraform_node
 ANS_NODE=ansible_node
 
 setup_terraform_image() {
-  if [ ! -z ${NOCACHE+x} ] || docker images | grep $TERR_NODE >/dev/null; then
+  if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $TERR_NODE; then
     docker build -f terraform/Dockerfile ./terraform -t $TERR_NODE $NOCACHE
   fi
 }
 
 setup_ansible_image() {
-  if [ ! -z ${NOCACHE+x} ] || docker images | grep $ANS_NODE >/dev/null; then
+  if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $ANS_NODE; then
     docker build . -t $ANS_NODE $NOCACHE
   fi
 }
