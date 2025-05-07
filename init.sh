@@ -12,7 +12,7 @@ Cloud-1 server configuration.
   -c, --configure            Configure deployed server with Ansible
       --configure-role=ROLE  Configure a specific service
       --rm                   Remove deployed server
-  -a, --all                  Deploy and configure server
+  -v, --verbose              Set logs in verbose mode
   -h, --help                 Print this message"
 }
 
@@ -31,17 +31,22 @@ setup_ansible_image() {
   fi
 }
 
+DEPLOY=1 CONFIG=1
 for arg in "$@"; do
   case "$arg" in
     -f|--force-build) NOCACHE=--no-cache ;;
-    -d|--deploy)      DEPLOY=1 ;;
-    -c|--configure)   CONFIG=1 ;;
+    -d|--deploy)      DEPLOY=1 CONFIG=0 ;;
+    -c|--configure)   DEPLOY=0 CONFIG=1  ;;
     --configure-role=*) 
       CONFIG=1
       ANSIBLE_ROLE=${arg##*=}
       ;;
-    --rm)             RM=1 ;;
-    -a|--all)         DEPLOY=1;CONFIG=1 ;;
+    --rm) DEPLOY=0 CONFIG=0 RM=1 ;;
+    -v|--verbose)     
+      if command -v cowsay >/dev/null; then
+        VERBOSE=1
+      fi 
+      ;;
     -h|--help)
       print_usage; exit 0 
       ;;
@@ -52,19 +57,33 @@ for arg in "$@"; do
   esac
 done
 
-if [ ! -z ${RM+x} ] && [ ! -z ${DEPLOY+x} ]; then
+if [ ! -z ${VERBOSE+x} ]; then
+  echo() {
+    builtin echo $@ | cowsay
+  }
+fi
+
+if [ ! -z ${RM+x} ] && [ ${DEPLOY} -ne 0 ]; then
   echo "Incompatible flags: --deploy, --rm" >&2
   print_usage >&2
   exit 1
 fi
 
-if [ ! -z ${RM+x} ] && [ ! -z ${CONFIG+x} ]; then
+if [ ! -z ${RM+x} ] && [ ${CONFIG} -ne 0 ]; then
   echo "Incompatible flags: --configure, --rm" >&2
   print_usage >&2
   exit 1
 fi
 
-if [ ! -z ${DEPLOY+x} ]; then
+if [ ! -z ${RM+x} ]; then
+  docker run --rm $TERR_NODE terraform apply \
+    --destroy \
+    --auto-approve \
+    --var-file=.tfvars
+  exit 0
+fi
+
+if [ ${DEPLOY} -ne 0 ]; then
   if [ ! -f "terraform/.tfvars" ]; then
     echo "[ Error ] tfvars file not provided, exiting..." >&2
     exit 1
@@ -78,18 +97,11 @@ if [ ! -z ${DEPLOY+x} ]; then
     --var-file=.tfvars
 fi
 
-if [ ! -z ${CONFIG+x} ]; then
+if [ ${CONFIG} -ne 0 ]; then
   setup_ansible_image
   docker run $ANS_NODE ansible-playbook \
     -i inventory \
     cloud1.playbook.yml \
     $ANSIBLE_ROLE
   exit 0
-fi
-
-if [ ! -z ${RM+x} ]; then
-  docker run --rm $TERR_NODE terraform apply \
-    --destroy \
-    --auto-approve \
-    --var-file=.tfvars
 fi
