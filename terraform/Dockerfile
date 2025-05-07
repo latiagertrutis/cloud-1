@@ -12,5 +12,4 @@ RUN terraform init
 
 VOLUME /opt/terraform
 
-ENTRYPOINT []
-CMD ["terraform", "help"]
+ENTRYPOINT ["terraform"]
