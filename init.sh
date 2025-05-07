@@ -66,7 +66,7 @@ fi
 
 if [ ! -z ${DEPLOY+x} ]; then
   if [ ! -f "terraform/.tfvars" ]; then
-    echo "[ Error ] tfvars file not provided, exiting..."
+    echo "[ Error ] tfvars file not provided, exiting..." >&2
     exit 1
   fi
   setup_terraform_image
