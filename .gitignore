@@ -1,1 +1,9 @@
-authorized_keys
+authorized_keys*
+
+# Terraform configuration files
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+.tfvars
+terraform/ssh/
