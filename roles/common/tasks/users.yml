@@ -1,0 +1,32 @@
+- name: Create Docker Group
+  group:
+    name: docker
+
+- name: Update Cache
+  apt:
+    update_cache: true    
+
+# No needed of sudo user for now
+# - name: Install Sudo
+#   apt:
+#     pkg: sudo
+#     state: present
+
+- name: Create User
+  user:
+    name: "{{ user }}"
+    shell: /bin/bash
+    password: "{{ user_password | password_hash('sha512') }}"
+    create_home: true
+    home: /home/{{ user }}
+    groups:
+      - docker
+      # - sudo
+
+# TODO: Host parameter does not match hashed host field in supplied key
+- name: Add SSH key To User
+  known_hosts:
+    name: portable-hall
+    key: "{{  lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
+    state: present
+  remote_user: "{{ user }}"

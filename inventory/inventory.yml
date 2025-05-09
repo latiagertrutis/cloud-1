@@ -1,7 +1,7 @@
 remote:
   hosts:
     digitalocean_1:
-      ansible_host: 152.42.134.158
+      ansible_host: "{{ host }}"
   vars:
     ansible_user: mrodrigu
 
