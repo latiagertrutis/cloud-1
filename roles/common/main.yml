@@ -1,4 +1,5 @@
 # Tareas comunes a todos los servicios
 tasks:
+  - include_tasks: fs.yml
   - include_tasks: user.yml
   - include_tasks: docker.yml

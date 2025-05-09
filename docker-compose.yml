@@ -1,9 +1,48 @@
 services:
-  terraform:
-    container_name: terraform_node
+  node1:
+    container_name: node_1
+    build: 
+      context: .
+      args:
+        SSH_USER: ${SSH_USER}
+        SSH_PWD: ${SSH_PWD}
+        ROOT_PWD: ${ROOT_PASSWORD}
+    privileged: true
+    networks:
+      nw:
+        ipv4_address: 10.2.0.3
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  node2:
+    container_name: node_2
+    build: 
+      context: .
+      args:
+        SSH_USER: ${SSH_USER}
+        SSH_PWD: ${SSH_PWD}
+        ROOT_PWD: ${ROOT_PASSWORD}
+    networks:
+      nw:
+        ipv4_address: 10.2.0.4
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock    
+
+  terraform_node:
+    container_name: terraform
+    command: sleep infinity
     build:
       context: .
-      dockerfile: terraform.Dockerfile
+      dockerfile: terraform/Dockerfile
     volumes:
-      - ./terraform/:/opt/terraform
-    command: sleep infinity
+      - ./terraform.local:/opt/terraform
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      nw:
+
+
+networks:
+  nw:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 10.2.0.0/24

@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-#ssh-keygen -q -t rsa -N '' -f ./generated_keys || true
-
 print_usage() {
   echo "Usage: ./init.sh OPTION
 Cloud-1 server configuration.
