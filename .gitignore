@@ -7,3 +7,9 @@ authorized_keys*
 *.tfstate.lock.info
 .tfvars
 terraform/ssh/
+
+# Environment 
+.venv
+.env
+.ansible
+inception
