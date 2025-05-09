@@ -22,5 +22,5 @@ provider "digitalocean" {
 }
 
 data "digitalocean_ssh_key" "terraform" {
-  name = "Terraform pruebas"
+  name = "cloud-1"
 }

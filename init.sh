@@ -89,10 +89,10 @@ if [ ${DEPLOY} -ne 0 ]; then
     exit 1
   fi
   setup_terraform_image
-  docker run $TERR_NODE terraform plan \
+  docker run -v ./terraform:/opt/terraform $TERR_NODE plan \
     --var-file=.tfvars \
     --input=false
-  docker run $TERR_NODE terraform apply \
+  docker run -v ./terraform:/opt/terraform $TERR_NODE apply \
     --auto-approve \
     --var-file=.tfvars
 fi
