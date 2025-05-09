@@ -1,4 +1,4 @@
-- name: docker
+- name: Set Up Machine
   hosts: digitalocean_1
   roles:
-    - docker
+    - common
