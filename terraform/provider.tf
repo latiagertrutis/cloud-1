@@ -7,13 +7,6 @@ terraform {
   }
 }
 
-variable "do_token" {
-  description = "DigitalOcean API token"
-  type = string
-  sensitive = true
-}
-variable "pvt_key" {}
-
 provider "digitalocean" {
   token = var.do_token
   http_retry_max = 10
@@ -22,5 +15,5 @@ provider "digitalocean" {
 }
 
 data "digitalocean_ssh_key" "terraform" {
-  name = "cloud-1"
+  name = var.ssh_key_name
 }

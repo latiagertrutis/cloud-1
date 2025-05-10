@@ -5,7 +5,7 @@ authorized_keys*
 *.tfstate
 *.tfstate.backup
 *.tfstate.lock.info
-.tfvars
+terraform.tfvars
 terraform/ssh/
 
 # Environment 

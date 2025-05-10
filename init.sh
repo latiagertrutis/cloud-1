@@ -84,7 +84,7 @@ if [ ! -z ${RM+x} ]; then
 fi
 
 if [ ${DEPLOY} -ne 0 ]; then
-  if [ ! -f "terraform/.tfvars" ]; then
+  if [ ! -f "terraform/terraform.tfvars" ]; then
     echo "[ Error ] tfvars file not provided, exiting..." >&2
     exit 1
   fi

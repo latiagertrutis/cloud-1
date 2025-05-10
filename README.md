@@ -50,3 +50,12 @@ Then use the fact to set the environment variables in the command
     APP_ENV: "{{ env_vars.APP_ENV }}"
     DB_HOST: "{{ env_vars.DB_HOST }}"
 ```
+
+## Terraform docs
+An example of an expected variable configuration for Terraform can be found in `terraform/terraform.tfvars.example`.
+
+- **do_token**: DigitalOcean token, needed by terraform for DO API communication.
+- **pvt_key**: Path to the SSH private key file, must be mounted in some way into the terraform container.
+- **ssh_key_name**: Name of the SSH public key uploaded to DO, will be used for droplet comm.
+
+
