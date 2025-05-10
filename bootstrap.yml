@@ -1,0 +1,4 @@
+- name: Bootstrap
+  hosts: digitalocean_1
+  roles:
+    - bootstrap

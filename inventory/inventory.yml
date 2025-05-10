@@ -1,7 +1,5 @@
 remote:
-  hosts:
-    digitalocean_1:
-      ansible_host: "{{ host }}"
+  hosts: digitalocean_1
   vars:
     ansible_user: mrodrigu
 

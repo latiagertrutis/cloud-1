@@ -1,0 +1,108 @@
+services:
+  nginx:
+    hostname: nginx
+    image: nginx
+    container_name: nginx
+    build:
+      context: ./requirements/nginx
+      args:
+        - SSL_CERT=${SSL_CERT?error}
+        - SSL_CERT_KEY=${SSL_CERT_KEY?error}
+    restart: on-failure
+    ports:
+      - "443:443"
+      - "80:80"
+    networks:
+      - network1
+    environment:
+      - SSL_PASSWORD=${SSL_PASSWORD?error}
+    volumes:
+      - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
+      - ${STATIC_SITE_VOLUME?error}:/srv/www/bellard/
+
+  mariadb:
+    hostname: mariadb
+    image: mariadb
+    container_name: mariadb
+    build: ./requirements/mariadb
+    restart: on-failure
+    networks:
+      - network1
+    environment:
+      - MYSQL_ROOT_USER=${MYSQL_ROOT_USER?error}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD?error}
+      - MYSQL_USER=${MYSQL_USER?error}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD?error}
+      - MYSQL_MAIL_USER=${MYSQL_MAIL_USER?error}
+      - MYSQL_MAIL_PASSWORD=${MYSQL_MAIL_PASSWORD?error}
+      - NETWORK_NAME=${NETWORK_NAME?error}
+    volumes:
+      - ${MARIADB_VOLUME?error}:/var/lib/mysql
+
+  wordpress:
+    hostname: wordpress
+    image: wordpress
+    container_name: wordpress
+    build: ./requirements/wordpress
+    restart: on-failure
+    networks:
+      - network1
+    environment:
+      - MYSQL_USER=${MYSQL_USER?error}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD?error}
+    volumes:
+      - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
+
+  redis:
+    hostname: redis
+    image: redis
+    container_name: redis
+    build: ./requirements/redis
+    restart: on-failure
+    networks:
+      - network1
+
+# Remember enter passive mode from client side!
+  ftp:
+    hostname: ftp
+    image: ftp
+    container_name: ftp
+    build: ./requirements/ftp
+    restart: on-failure
+    ports:
+      - "20-21:20-21"
+      - "9090-9099:9090-9099"
+    environment:
+      - FTP_USER=${FTP_USER?error}
+      - FTP_PASSWORD=${FTP_PASSWORD?error}
+    volumes:
+      - ${WORDPRESS_VOLUME?error}:/home/${FTP_USER?error}
+
+  mail:
+    hostname: mail
+    image: mail
+    container_name: mail
+    build: ./requirements/mail
+    restart: on-failure
+    networks:
+      - network1
+    ports:
+      - "7070:7070"
+      - "25:25"
+      - "587:587"
+      - "465:465"
+      - "143:143"
+      - "993:993"
+      - "110:110"
+      - "995:995"
+      - "4190:4190"
+      - "7443:443"
+    environment:
+      - MYSQL_MAIL_USER=${MYSQL_MAIL_USER?error}
+      - MYSQL_MAIL_PASSWORD=${MYSQL_MAIL_PASSWORD?error}
+      - MAIL_USER=${MAIL_USER?error}
+      - MAIL_PASSWORD=${MAIL_PASSWORD?error}
+
+networks:
+  network1:
+    name: ${NETWORK_NAME?error}

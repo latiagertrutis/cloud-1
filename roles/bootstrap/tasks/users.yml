@@ -12,6 +12,7 @@
 #     pkg: sudo
 #     state: present
 
+# TODO: Manage properly password in a private way
 - name: Create User
   user:
     name: "{{ user }}"
