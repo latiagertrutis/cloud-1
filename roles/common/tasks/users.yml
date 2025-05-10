@@ -23,10 +23,8 @@
       - docker
       # - sudo
 
-# TODO: Host parameter does not match hashed host field in supplied key
 - name: Add SSH key To User
-  known_hosts:
-    name: portable-hall
+  authorized_key:
+    user: "{{ user }}"
     key: "{{  lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
     state: present
-  remote_user: "{{ user }}"
