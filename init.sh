@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-#ssh-keygen -q -t rsa -N '' -f ./generated_keys || true
-
 print_usage() {
   echo "Usage: ./init.sh OPTION
 Cloud-1 server configuration.
@@ -79,7 +77,7 @@ if [ ! -z ${RM+x} ]; then
   docker run --rm $TERR_NODE terraform apply \
     --destroy \
     --auto-approve \
-    --var-file=.tfvars
+    --var-file=terraform.tfvars
   exit 0
 fi
 
@@ -90,11 +88,11 @@ if [ ${DEPLOY} -ne 0 ]; then
   fi
   setup_terraform_image
   docker run -v ./terraform:/opt/terraform $TERR_NODE plan \
-    --var-file=.tfvars \
+    --var-file=terraform.tfvars \
     --input=false
   docker run -v ./terraform:/opt/terraform $TERR_NODE apply \
     --auto-approve \
-    --var-file=.tfvars
+    --var-file=terraform.tfvars
 fi
 
 if [ ${CONFIG} -ne 0 ]; then
