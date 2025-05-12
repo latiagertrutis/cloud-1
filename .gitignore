@@ -1,4 +1,5 @@
 authorized_keys*
+*.pem
 
 # Terraform configuration files
 .terraform/

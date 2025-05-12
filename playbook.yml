@@ -2,3 +2,4 @@
   hosts: digitalocean_1
   roles:
     - common
+    - mariadb

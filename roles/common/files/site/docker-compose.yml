@@ -35,6 +35,12 @@ services:
       - MYSQL_MAIL_USER=${MYSQL_MAIL_USER?error}
       - MYSQL_MAIL_PASSWORD=${MYSQL_MAIL_PASSWORD?error}
       - NETWORK_NAME=${NETWORK_NAME?error}
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
     volumes:
       - ${MARIADB_VOLUME?error}:/var/lib/mysql
 
@@ -49,6 +55,9 @@ services:
     environment:
       - MYSQL_USER=${MYSQL_USER?error}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD?error}
+    depends_on:
+      mariadb:
+        condition: service_healthy
     volumes:
       - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
 
