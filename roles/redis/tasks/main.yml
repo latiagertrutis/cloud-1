@@ -1,0 +1,9 @@
+- name: Run Redis Server
+  community.docker.docker_compose_v2:
+    services: redis
+    wait: true
+    wait_timeout: 60
+    state: present
+    build: always
+    remove_orphans: true
+    project_src: "{{ ansible_env.HOME }}/site"

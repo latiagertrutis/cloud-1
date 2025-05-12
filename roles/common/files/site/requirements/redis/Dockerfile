@@ -16,5 +16,6 @@ RUN tar -C / -zxvf /redis-stable.tar.gz && \
 FROM debian:11
 
 COPY --from=build /redis-stable/src/redis-server /
+COPY --from=build /redis-stable/src/redis-cli /
 
 ENTRYPOINT [ "/redis-server", "--protected-mode no"]
