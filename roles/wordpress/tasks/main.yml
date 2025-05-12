@@ -1,6 +1,6 @@
-- name: Run Mariadb
+- name: Run php-fpm
   community.docker.docker_compose_v2:
-    services: mariadb
+    services: wordpress
     wait: true
     wait_timeout: 60
     state: present

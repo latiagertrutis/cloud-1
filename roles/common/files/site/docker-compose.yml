@@ -55,9 +55,16 @@ services:
     environment:
       - MYSQL_USER=${MYSQL_USER?error}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD?error}
+      - FCGI_CONNECT=wordpress:9000
     depends_on:
       mariadb:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/php-fpm-healthcheck"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
     volumes:
       - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
 

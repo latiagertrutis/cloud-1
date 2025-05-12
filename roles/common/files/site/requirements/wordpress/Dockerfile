@@ -17,9 +17,16 @@ FROM debian:11
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     php-fpm=2:7.4+76 \
+    wget \
+    ca-certificates \
+    libfcgi-bin \
     php-mysqli \
     php-redis \
     && rm -rf /var/lib/apt/lists/*
+
+RUN wget -O /php-fpm-healthcheck \
+    https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck \
+    && chmod +x /php-fpm-healthcheck
 
 RUN mkdir -p /run/php
 
