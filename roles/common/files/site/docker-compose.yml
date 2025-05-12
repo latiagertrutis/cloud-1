@@ -1,24 +1,4 @@
 services:
-  nginx:
-    hostname: nginx
-    image: nginx
-    container_name: nginx
-    build:
-      context: ./requirements/nginx
-      args:
-        - SSL_CERT=${SSL_CERT?error}
-        - SSL_CERT_KEY=${SSL_CERT_KEY?error}
-    restart: on-failure
-    ports:
-      - "443:443"
-      - "80:80"
-    networks:
-      - network1
-    environment:
-      - SSL_PASSWORD=${SSL_PASSWORD?error}
-    volumes:
-      - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
-
   mariadb:
     hostname: mariadb
     image: mariadb
@@ -78,6 +58,34 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "/php-fpm-healthcheck"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
+
+  nginx:
+    hostname: nginx
+    image: nginx
+    container_name: nginx
+    build:
+      context: ./requirements/nginx
+      args:
+        - SSL_CERT=${SSL_CERT?error}
+        - SSL_CERT_KEY=${SSL_CERT_KEY?error}
+    restart: on-failure
+    ports:
+      - "443:443"
+    networks:
+      - network1
+    environment:
+      - SSL_PASSWORD=${SSL_PASSWORD?error}
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-k", "--fail", "https://nginx"]
       start_period: 10s
       interval: 10s
       timeout: 5s

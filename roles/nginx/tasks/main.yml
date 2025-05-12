@@ -1,26 +1,9 @@
-- name: Create Nginx Dockerfile
-  template:
-    src: "Dockerfile.j2"
-    dest: "{{ resources_dir }}/Dockerfile"
-
-- name: Provide Files
-  copy:
-    src: files/
-    dest: "{{ resources_dir }}/"
-    owner: mrodrigu
-    group: mrodrigu
-    mode: '0744'
-    
-- name: Set Facts
-  set_fact:
-    domain: "{{ lookup('ini', 'DOMAIN', file='env.ini') }}"
-
-- name: Run Test
-  command: "{{ resources_dir }}/test.sh"
-  environment:
-    DOMAIN: "{{ domain }}"
-  register: run_test
-
-- debug:
-    msg: "{{ run_test.stdout }}"
-    
+- name: Run Nginx
+  community.docker.docker_compose_v2:
+    services: nginx
+    wait: true
+    wait_timeout: 60
+    state: present
+    build: always
+    remove_orphans: true
+    project_src: "{{ ansible_env.HOME }}/site"
