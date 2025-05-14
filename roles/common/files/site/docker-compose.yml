@@ -20,7 +20,7 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - ${MARIADB_VOLUME?error}:/var/lib/mysql
+      - mariadb_volume:/var/lib/mysql
 
   redis:
     hostname: redis
@@ -61,7 +61,7 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
+      - wordpress_volume:/srv/www/wordpress/
 
   nginx:
     hostname: nginx
@@ -89,8 +89,14 @@ services:
       timeout: 5s
       retries: 3
     volumes:
-      - ${WORDPRESS_VOLUME?error}:/srv/www/wordpress/
+      - wordpress_volume:/srv/www/wordpress/
 
 networks:
   network1:
     name: ${NETWORK_NAME?error}
+
+volumes:
+  wordpress_volume:
+    name: ${WORDPRESS_VOLUME?error}
+  mariadb_volume:
+    name: ${MARIADB_VOLUME?error}
