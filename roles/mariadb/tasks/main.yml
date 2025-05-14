@@ -1,6 +1,6 @@
-- name: Run Nginx
+- name: Run Mariadb
   community.docker.docker_compose_v2:
-    services: nginx
+    services: mariadb
     wait: true
     wait_timeout: 60
     state: present

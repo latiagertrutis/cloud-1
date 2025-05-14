@@ -1,0 +1,6 @@
+- name: Copy Site In Remote
+  synchronize:
+    src: files/site/
+    dest: "{{ ansible_env.HOME }}/site"
+    delete: true
+    recursive: true

@@ -1,4 +1,8 @@
-- name: docker
-  hosts: digitalocean_1
+- name: Set Up Machine
+  hosts: remote
   roles:
-    - docker
+    - common
+    - mariadb
+    - redis
+    - wordpress
+    - nginx
