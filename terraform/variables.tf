@@ -11,3 +11,8 @@ variable "ssh_key_name" {
     description = "SSH public key name in DigitalOcean"
     type = string
 }
+variable "droplet_count" {
+    description = "Number of droplets to be deployed"
+    type = number
+    default = 1
+}

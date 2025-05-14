@@ -1,10 +1,16 @@
 resource "digitalocean_droplet" "cloud-1" {
+  count = var.droplet_count
+
   image = "ubuntu-20-04-x64"
   name = "cloud-1"
   size = "s-1vcpu-1gb"
+  region = "ams3"
   ssh_keys = [
     data.digitalocean_ssh_key.terraform.id
   ]
+  ipv6 = false
+  tags = ["cloud-1"]
+
   user_data = <<-EOF
   #!/bin/bash
 
@@ -18,14 +24,20 @@ resource "digitalocean_droplet" "cloud-1" {
     private_key = file(var.pvt_key)
     timeout = "2m"
   }
-  provisioner "local-exec" {
-    command = "echo ${self.ipv4_address}"
-  }
 }
 
-output "cloud-1_public_ip" {
-  # Testing
-  description = "IP of managed droplet resource"
-#  value = digitalocean_droplet.ipv4_address
-  value = digitalocean_droplet.cloud-1.ipv4_address
+resource "null_resource" "ansible_inventory" {
+  depends_on = [ digitalocean_droplet.cloud-1 ]
+  triggers = {
+    ipv4_addresses = join(",", [for i in digitalocean_droplet.cloud-1 : i.ipv4_address])
+  }
+  provisioner "local-exec" {
+    interpreter = ["python", "-c"]
+    command = <<-EOF
+      ips = "${self.triggers.ipv4_addresses}"
+      with open('/opt/app/test.inventory.yml', 'w') as f:
+        for ip in ips.split(','):
+          f.write(f'{ip}\n')
+    EOF
+  }
 }

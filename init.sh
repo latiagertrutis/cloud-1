@@ -19,7 +19,7 @@ ANS_NODE=ansible_node
 
 setup_terraform_image() {
   if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $TERR_NODE; then
-    docker build -f terraform/Dockerfile ./terraform -t $TERR_NODE $NOCACHE
+    docker build -f environment/Dockerfile . -t $TERR_NODE $NOCACHE
   fi
 }
 
