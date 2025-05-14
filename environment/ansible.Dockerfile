@@ -1,9 +1,15 @@
 FROM alpine:3.21 as build
 
 RUN mkdir /opt/app
-RUN apk add --no-cache ansible
+WORKDIR /opt/app
+
+COPY environment/ansible-entrypoint.sh /tmp/ansible-entrypoint.sh
+RUN chmod +x /tmp/ansible-entrypoint.sh
+
+RUN apk add --no-cache ansible openssh
+
+COPY . .
 
 VOLUME /opt/app
 
-ENTRYPOINT [ ]
-CMD [ "ansible-playbook", "--help" ]
+ENTRYPOINT [ "/tmp/ansible-entrypoint.sh" ]

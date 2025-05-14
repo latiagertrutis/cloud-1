@@ -37,7 +37,7 @@ for arg in "$@"; do
     -c|--configure)   DEPLOY=0 CONFIG=1  ;;
     --configure-role=*) 
       CONFIG=1
-      ANSIBLE_ROLE=${arg##*=}
+      ANSIBLE_ROLE="--tags ${arg##*=}"
       ;;
     --rm) RM=1 ;;
     -v|--verbose)     
@@ -88,19 +88,15 @@ if [ ${DEPLOY} -ne 0 ]; then
     exit 1
   fi
   setup_terraform_image
-  docker run -v ./terraform:/opt/app/terraform $TERR_NODE plan \
+  docker run -v .:/opt/app/ $TERR_NODE plan \
     --var-file=terraform.tfvars \
     --input=false
-  docker run -v ./terraform:/opt/app/terraform $TERR_NODE apply \
+  docker run -v .:/opt/app/ $TERR_NODE apply \
     --auto-approve \
     --var-file=terraform.tfvars
 fi
 
 if [ ${CONFIG} -ne 0 ]; then
   setup_ansible_image
-  docker run $ANS_NODE ansible-playbook \
-    -i inventory \
-    cloud1.playbook.yml \
-    $ANSIBLE_ROLE
-  exit 0
+  docker run --rm $ANS_NODE $ANSIBLE_ROLE
 fi

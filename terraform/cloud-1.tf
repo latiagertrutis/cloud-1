@@ -35,9 +35,32 @@ resource "null_resource" "ansible_inventory" {
     interpreter = ["python", "-c"]
     command = <<-EOF
       ips = "${self.triggers.ipv4_addresses}"
-      with open('/opt/app/test.inventory.yml', 'w') as f:
-        for ip in ips.split(','):
-          f.write(f'{ip}\n')
+      bootstrap_hosts_block = ''
+      inventory_hosts_block = ''
+      for ip, i in enumerate(ips):
+        bootstrap_hosts_block += f"""
+            droplet_{i}:
+              ansible_user: root
+              ansible_host: {ip}
+        """
+        inventory_hosts_block += f"""
+            droplet_{i}:
+              ansible_user: fumon
+              ansible_host: {ip}
+        """
+
+      with open('/opt/app/inventory/bootstrap.yml', 'w') as f:
+        f.write(f"""
+        remote:
+          hosts:
+        {bootstrap_hosts_block}
+        """)
+      with open('/opt/app/inventory/inventory.yml', 'w') as f:
+        f.write(f"""
+        remote:
+          hosts:
+        {inventory_hosts_block}
+        """)
     EOF
   }
 }
