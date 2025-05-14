@@ -19,13 +19,13 @@ ANS_NODE=ansible_node
 
 setup_terraform_image() {
   if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $TERR_NODE; then
-    docker build -f environment/Dockerfile . -t $TERR_NODE $NOCACHE
+    docker build -f environment/terraform.Dockerfile . -t $TERR_NODE $NOCACHE
   fi
 }
 
 setup_ansible_image() {
   if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $ANS_NODE; then
-    docker build . -t $ANS_NODE $NOCACHE
+    docker build -f environment/ansible.Dockerfile . -t $ANS_NODE $NOCACHE
   fi
 }
 
@@ -39,7 +39,7 @@ for arg in "$@"; do
       CONFIG=1
       ANSIBLE_ROLE=${arg##*=}
       ;;
-    --rm) DEPLOY=0 CONFIG=0 RM=1 ;;
+    --rm) RM=1 ;;
     -v|--verbose)     
       if command -v cowsay >/dev/null; then
         VERBOSE=1
@@ -74,6 +74,7 @@ if [ ! -z ${RM+x} ] && [ ${CONFIG} -ne 0 ]; then
 fi
 
 if [ ! -z ${RM+x} ]; then
+  setup_terraform_image
   docker run --rm $TERR_NODE terraform apply \
     --destroy \
     --auto-approve \
@@ -87,10 +88,10 @@ if [ ${DEPLOY} -ne 0 ]; then
     exit 1
   fi
   setup_terraform_image
-  docker run -v ./terraform:/opt/terraform $TERR_NODE plan \
+  docker run -v ./terraform:/opt/app/terraform $TERR_NODE plan \
     --var-file=terraform.tfvars \
     --input=false
-  docker run -v ./terraform:/opt/terraform $TERR_NODE apply \
+  docker run -v ./terraform:/opt/app/terraform $TERR_NODE apply \
     --auto-approve \
     --var-file=terraform.tfvars
 fi
