@@ -7,3 +7,6 @@
     build: always
     remove_orphans: true
     project_src: "{{ ansible_env.HOME }}/site"
+  tags:
+    - redis
+    - services
