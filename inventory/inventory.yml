@@ -1,0 +1,8 @@
+remote:
+  hosts:
+    digitalocean_1:
+      ansible_user: mrodrigu
+      ansible_host: 128.199.27.112
+    digitalocean_2:
+      ansible_user: mrodrigu
+      ansible_host: 143.198.158.122

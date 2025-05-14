@@ -1,6 +1,6 @@
-- name: Run Nginx
+- name: Run Redis Server
   community.docker.docker_compose_v2:
-    services: nginx
+    services: redis
     wait: true
     wait_timeout: 60
     state: present
@@ -8,5 +8,5 @@
     remove_orphans: true
     project_src: "{{ ansible_env.HOME }}/site"
   tags:
-    - nginx
+    - redis
     - services
