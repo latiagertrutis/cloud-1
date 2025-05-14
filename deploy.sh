@@ -16,10 +16,11 @@ usage() {
     exit 0
 }
 
-while getopts "bd" name; do
+while getopts "bdt:" name; do
     case $name in
 	b) bootstrap=1 ;;
 	d) deploy=1 ;;
+	t) tags="$OPTARG" ;;
 	?) usage ;;
     esac
 done
@@ -36,5 +37,5 @@ fi
 
 if [ ! -z ${deploy+x} ]; then
     echo "Starting Deploy..."
-    $ANSIBLE_PLAYBOOK -i inventory/inventory.yml playbook.yml
+    $ANSIBLE_PLAYBOOK -i inventory/inventory.yml playbook.yml ${tags:+--tags "$tags"}
 fi

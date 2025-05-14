@@ -4,3 +4,5 @@
     dest: "{{ ansible_env.HOME }}/site"
     delete: true
     recursive: true
+  tags:
+    - common
