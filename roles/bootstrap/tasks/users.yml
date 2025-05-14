@@ -17,7 +17,7 @@
   user:
     name: "{{ user }}"
     shell: /bin/bash
-    password: "{{ user_password | password_hash('sha512') }}"
+    password: "{{ lookup('ansible.builtin.password', role_path + '/vars/user_secret', encrypt='sha512_crypt') }}"
     create_home: true
     home: /home/{{ user }}
     groups:
