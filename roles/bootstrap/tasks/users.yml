@@ -6,13 +6,6 @@
   apt:
     update_cache: true    
 
-# No needed of sudo user for now
-# - name: Install Sudo
-#   apt:
-#     pkg: sudo
-#     state: present
-
-# TODO: Manage properly password in a private way
 - name: Create User
   user:
     name: "{{ user }}"
@@ -22,7 +15,6 @@
     home: /home/{{ user }}
     groups:
       - docker
-      # - sudo
 
 - name: Add SSH key To User
   authorized_key:
