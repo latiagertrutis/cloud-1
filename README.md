@@ -57,5 +57,4 @@ An example of an expected variable configuration for Terraform can be found in `
 - **do_token**: DigitalOcean token, needed by terraform for DO API communication.
 - **pvt_key**: Path to the SSH private key file, must be mounted in some way into the terraform container.
 - **ssh_key_name**: Name of the SSH public key uploaded to DO, will be used for droplet comm.
-
-
+- **droplet_count**: Number of dropletes to be instanciated
