@@ -1,5 +1,5 @@
 - name: Set Up Machine
-  hosts: digitalocean_1
+  hosts: remote
   roles:
     - common
     - mariadb
