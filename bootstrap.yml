@@ -1,0 +1,4 @@
+- name: Bootstrap
+  hosts: remote
+  roles:
+    - bootstrap
