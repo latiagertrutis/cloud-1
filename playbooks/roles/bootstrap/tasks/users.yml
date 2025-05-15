@@ -19,5 +19,5 @@
 - name: Add SSH key To User
   authorized_key:
     user: "{{ user }}"
-    key: "{{  lookup('file', lookup('env', 'HOME') + '/.ssh/terraform_key.pub') }}"
+    key: "{{  lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
     state: present

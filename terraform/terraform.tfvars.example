@@ -1,3 +1,5 @@
 do_token = "DigitalOcean token"
-pvt_key = "Path/To/Private key"
+# pvt_key value must be the same as the volume mount value in launcher script
+pvt_key = "/tmp/.ssh/terraform_key"
 ssh_key_name = "Public key"
+droplet_count = Some Number

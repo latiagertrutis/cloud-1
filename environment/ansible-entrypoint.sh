@@ -1,5 +1,8 @@
 #!/bin/sh
 
+export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
+export ANSIBLE_LOCALHOST_WARNING=False
+
 ANSIBLE_PLAYBOOK="ansible-playbook"
 
 usage() {

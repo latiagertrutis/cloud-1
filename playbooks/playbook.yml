@@ -2,7 +2,7 @@
   hosts: localhost
   gather_facts: false
   vars:
-    hosts: "{{ lookup('file', 'hosts.dat').splitlines() }}"
+    addresses: "{{ lookup('file', 'hosts.dat').splitlines() }}"
   tasks:
     - name: Template inventory
       add_host:
@@ -10,7 +10,7 @@
         groups: remote
         ansible_user: fumon
         ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
-      loop: "{{ hosts }}"
+      loop: "{{ addresses }}"
 
 - name: Set Up Machine
   hosts: remote

@@ -35,7 +35,7 @@ resource "null_resource" "ansible_inventory" {
     interpreter = ["python", "-c"]
     command = <<-EOF
       ips = "${self.triggers.ipv4_addresses}".split(',')
-      with open('/opt/app/terraform/hosts.dat', 'w') as f:
+      with open('/tmp/out/hosts.dat', 'w') as f:
         for _, ip in enumerate(ips):
           f.write(f"{ip}\n")
     EOF

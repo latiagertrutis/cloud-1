@@ -15,5 +15,7 @@ RUN mkdir -pv /opt/app/terraform
 WORKDIR /opt/app/terraform
 
 VOLUME /opt/app/terraform
+VOLUME /tmp/.ssh
+VOLUME /tmp/out
 
 ENTRYPOINT ["terraform"]
