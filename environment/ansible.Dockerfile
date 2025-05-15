@@ -8,7 +8,7 @@ WORKDIR /opt/app
 COPY environment/ansible-entrypoint.sh /tmp/ansible-entrypoint.sh
 RUN chmod +x /tmp/ansible-entrypoint.sh
 
-RUN apk add --no-cache ansible openssh py3-passlib
+RUN apk add --no-cache ansible openssh py3-passlib rsync
 
 COPY . .
 

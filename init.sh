@@ -29,12 +29,11 @@ setup_ansible_image() {
   fi
 }
 
-DEPLOY=1 CONFIG=1
 for arg in "$@"; do
   case "$arg" in
     -f|--force-build) NOCACHE=--no-cache ;;
-    -d|--deploy)      DEPLOY=1 CONFIG=0 ;;
-    -c|--configure)   DEPLOY=0 CONFIG=1  ;;
+    -d|--deploy)      DEPLOY=1  ;;
+    -c|--configure)   CONFIG=1  ;;
     --configure-role=*) 
       CONFIG=1
       ANSIBLE_ROLE="--tags ${arg##*=}"
@@ -61,13 +60,13 @@ if [ ! -z ${VERBOSE+x} ]; then
   }
 fi
 
-if [ ! -z ${RM+x} ] && [ ${DEPLOY} -ne 0 ]; then
+if [ ! -z ${RM+x} ] && [ ! -z ${DEPLOY+x} ]; then
   echo "Incompatible flags: --deploy, --rm" >&2
   print_usage >&2
   exit 1
 fi
 
-if [ ! -z ${RM+x} ] && [ ${CONFIG} -ne 0 ]; then
+if [ ! -z ${RM+x} ] && [ ! -z ${CONFIG+x} ]; then
   echo "Incompatible flags: --configure, --rm" >&2
   print_usage >&2
   exit 1
@@ -75,11 +74,16 @@ fi
 
 if [ ! -z ${RM+x} ]; then
   setup_terraform_image
-  docker run --rm $TERR_NODE terraform apply \
+  docker run --rm $TERR_NODE apply \
     --destroy \
     --auto-approve \
     --var-file=terraform.tfvars
   exit 0
+fi
+
+if [ -z ${RM+x} ] && [ -z ${CONFIG+x} ] && [ -z ${DEPLOY+x} ]; then
+  DEPLOY=1
+  CONFIG=1
 fi
 
 if [ ${DEPLOY} -ne 0 ]; then

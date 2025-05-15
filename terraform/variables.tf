@@ -1,10 +1,11 @@
 variable "do_token" {
-  description = "DigitalOcean API token"
-  type = string
-  sensitive = true
+    description = "DigitalOcean API token"
+    type = string
+    sensitive = true
 }
 variable "pvt_key" {
     description = "SSH private key file path for droplet connection"
+    default = "/opt/app/terraform/ssh/authorized_keys"
     type = string
 }
 variable "ssh_key_name" {
