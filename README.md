@@ -58,3 +58,19 @@ An example of an expected variable configuration for Terraform can be found in `
 - **pvt_key**: Path to the SSH private key file, must be mounted in some way into the terraform container.
 - **ssh_key_name**: Name of the SSH public key uploaded to DO, will be used for droplet comm.
 - **droplet_count**: Number of dropletes to be instanciated
+
+To use terraform in playground mode:
+```bash
+docker run -it --entrypoint sh -v .:/opt/app terraform_node
+```
+
+Then, inside, you can check out the actual state of a machine with the following command.
+```bash
+terraform show state 'digitalocean_droplet.cloud-1'
+```
+
+To force a resource to be reapplied, first you must taint it then reapply.
+```bash
+terraform taint 'local_resource.name'
+terraform apply -target 'local_resource.name'
+```

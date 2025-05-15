@@ -98,5 +98,5 @@ fi
 
 if [ ${CONFIG} -ne 0 ]; then
   setup_ansible_image
-  docker run --rm $ANS_NODE $ANSIBLE_ROLE
+  docker run --rm -v .:/opt/app/ $ANS_NODE $ANSIBLE_ROLE
 fi
