@@ -34,10 +34,10 @@ resource "null_resource" "ansible_inventory" {
   provisioner "local-exec" {
     interpreter = ["python", "-c"]
     command = <<-EOF
-      ips = "${self.triggers.ipv4_addresses}"
+      ips = "${self.triggers.ipv4_addresses}".split(',')
       bootstrap_hosts_block = ''
       inventory_hosts_block = ''
-      for ip, i in enumerate(ips):
+      for i, ip in enumerate(ips):
         bootstrap_hosts_block += f"""
             droplet_{i}:
               ansible_user: root
