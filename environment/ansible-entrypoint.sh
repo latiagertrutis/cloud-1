@@ -30,10 +30,10 @@ fi
 
 if [ ! -z ${bootstrap+x} ]; then
     echo "Starting Bootstrap..."
-    $ANSIBLE_PLAYBOOK -i inventory/bootstrap.yml bootstrap.yml
+    $ANSIBLE_PLAYBOOK bootstrap.yml
 fi
 
 if [ ! -z ${deploy+x} ]; then
     echo "Starting Deploy..."
-    $ANSIBLE_PLAYBOOK -i inventory/inventory.yml playbook.yml ${tags:+--tags "$tags"}
+    $ANSIBLE_PLAYBOOK playbook.yml ${tags:+--tags "$tags"}
 fi

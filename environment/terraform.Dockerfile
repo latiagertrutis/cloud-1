@@ -7,14 +7,13 @@ RUN curl -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.1.3/te
 
 FROM python:3.14-rc-alpine
 
-RUN mkdir -pv /opt/app
 RUN apk add --no-cache curl
-WORKDIR /opt/app/terraform
 
 COPY --from=build /usr/bin/terraform /usr/bin/terraform
-COPY . /opt/app/
-RUN terraform init
 
-VOLUME /opt/app
+RUN mkdir -pv /opt/app/terraform
+WORKDIR /opt/app/terraform
+
+VOLUME /opt/app/terraform
 
 ENTRYPOINT ["terraform"]

@@ -14,8 +14,11 @@ Cloud-1 server configuration.
   -h, --help                 Print this message"
 }
 
+# *** VARIABLES ***
 TERR_NODE=terraform_node
 ANS_NODE=ansible_node
+
+SSH_DIR_DEFAULT="$HOME/.ssh"
 
 setup_terraform_image() {
   if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $TERR_NODE; then
@@ -34,11 +37,14 @@ for arg in "$@"; do
     -f|--force-build) NOCACHE=--no-cache ;;
     -d|--deploy)      DEPLOY=1  ;;
     -c|--configure)   CONFIG=1  ;;
+    -r|--rm) RM=1 ;;
+    --ssh-dir=*)
+	SSH_DIR="${arg##*=}"
+	;;
     --configure-role=*) 
       CONFIG=1
       ANSIBLE_ROLE="--tags ${arg##*=}"
       ;;
-    --rm) RM=1 ;;
     -v|--verbose)     
       if command -v cowsay >/dev/null; then
         VERBOSE=1
@@ -92,15 +98,18 @@ if [ ${DEPLOY} -ne 0 ]; then
     exit 1
   fi
   setup_terraform_image
-  docker run -v .:/opt/app/ $TERR_NODE plan \
+  docker run -v ./terraform:/opt/app/ $TERR_NODE plan \
     --var-file=terraform.tfvars \
     --input=false
-  docker run -v .:/opt/app/ $TERR_NODE apply \
+  docker run -v ./terraform:/opt/app/ $TERR_NODE apply \
     --auto-approve \
     --var-file=terraform.tfvars
 fi
 
 if [ ${CONFIG} -ne 0 ]; then
   setup_ansible_image
-  docker run --rm -v .:/opt/app/ $ANS_NODE $ANSIBLE_ROLE
+  docker run --rm \
+	 -v ${SSH_DIR:-$SSH_DIR_DEFAULT}:/root/.ssh \
+	 -v ./playbooks:/playbooks \
+	 $ANS_NODE $ANSIBLE_ROLE
 fi

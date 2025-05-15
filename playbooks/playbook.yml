@@ -1,0 +1,22 @@
+- name: Generate Inventory 
+  hosts: localhost
+  gather_facts: false
+  vars:
+    hosts: "{{ lookup('file', 'hosts.dat').splitlines() }}"
+  tasks:
+    - name: Template inventory
+      add_host:
+        name: "{{ item }}"
+        groups: remote
+        ansible_user: fumon
+        ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      loop: "{{ hosts }}"
+
+- name: Set Up Machine
+  hosts: remote
+  roles:
+    - common
+    - mariadb
+    - redis
+    - wordpress
+    - nginx
