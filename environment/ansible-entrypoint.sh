@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -e
-
 ANSIBLE_PLAYBOOK="ansible-playbook"
 
 usage() {
