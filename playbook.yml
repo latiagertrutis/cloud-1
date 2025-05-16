@@ -1,8 +1,0 @@
-- name: Set Up Machine
-  hosts: remote
-  roles:
-    - common
-    - mariadb
-    - redis
-    - wordpress
-    - nginx

@@ -50,3 +50,27 @@ Then use the fact to set the environment variables in the command
     APP_ENV: "{{ env_vars.APP_ENV }}"
     DB_HOST: "{{ env_vars.DB_HOST }}"
 ```
+
+## Terraform docs
+An example of an expected variable configuration for Terraform can be found in `terraform/terraform.tfvars.example`.
+
+- **do_token**: DigitalOcean token, needed by terraform for DO API communication.
+- **pvt_key**: Path to the SSH private key file, must be mounted in some way into the terraform container.
+- **ssh_key_name**: Name of the SSH public key uploaded to DO, will be used for droplet comm.
+- **droplet_count**: Number of dropletes to be instanciated
+
+To use terraform in playground mode:
+```bash
+docker run -it --entrypoint sh -v .:/opt/app terraform_node
+```
+
+Then, inside, you can check out the actual state of a machine with the following command.
+```bash
+terraform show state 'digitalocean_droplet.cloud-1'
+```
+
+To force a resource to be reapplied, first you must taint it then reapply.
+```bash
+terraform taint 'local_resource.name'
+terraform apply -target 'local_resource.name'
+```
