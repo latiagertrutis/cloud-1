@@ -2,7 +2,7 @@
 set -e
 
 print_usage() {
-    echo "Usage: ./init.sh OPTION
+    echo "Usage: ./launcher OPTION
 Cloud-1 server configuration.
 
   -f, --force-build          Rebuild images ignoring caches
