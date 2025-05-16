@@ -12,12 +12,12 @@
     shell: /bin/bash
     password: "{{ lookup('ansible.builtin.password', role_path + '/vars/user_secret', encrypt='sha512_crypt') }}"
     create_home: true
-    home: /home/{{ user }}
+    home: "/home/{{ user }}"
     groups:
       - docker
 
 - name: Add SSH key To User
   authorized_key:
     user: "{{ user }}"
-    key: "{{  lookup('file', '/opt/app/terraform/ssh/terraform_key.pub') }}"
+    key: "{{  lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
     state: present

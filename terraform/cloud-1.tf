@@ -35,37 +35,9 @@ resource "null_resource" "ansible_inventory" {
     interpreter = ["python", "-c"]
     command = <<-EOF
       ips = "${self.triggers.ipv4_addresses}".split(',')
-      bootstrap_hosts_block = ''
-      inventory_hosts_block = ''
-      for i, ip in enumerate(ips):
-        bootstrap_hosts_block += f"""
-            droplet_{i}:
-              ansible_host: {ip}
-
-        """
-        inventory_hosts_block += f"""
-            droplet_{i}:
-              ansible_host: {ip}
-        """
-
-      with open('/opt/app/inventory/bootstrap.yml', 'w') as f:
-        f.write(f"""
-        remote:
-          hosts:
-        {bootstrap_hosts_block}
-          vars:
-            ansible_user: root
-            ansible_ssh_private_key_file: terraform/ssh/terraform_key
-        """)
-      with open('/opt/app/inventory/inventory.yml', 'w') as f:
-        f.write(f"""
-        remote:
-          hosts:
-        {inventory_hosts_block}
-          vars:
-            ansible_user: fumon
-            ansible_ssh_private_key_file: terraform/ssh/terraform_key
-        """)
+      with open('/tmp/out/hosts.dat', 'w') as f:
+        for _, ip in enumerate(ips):
+          f.write(f"{ip}\n")
     EOF
   }
 }

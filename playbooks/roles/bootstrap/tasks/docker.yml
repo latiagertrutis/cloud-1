@@ -1,14 +1,3 @@
-- name: Check If Docker Is Installed
-  shell: dpkg-query -W docker
-  register: docker_installed
-  ignore_errors: True
-  check_mode: False
-  changed_when: False
-
-- name: Stop If Docker Installed
-  meta: end_role
-  when: docker_installed.rc == 0
-
 - name: Install docker dependencies
   become: true
   apt:

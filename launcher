@@ -1,0 +1,172 @@
+#!/bin/bash
+set -e
+
+print_usage() {
+    echo "Usage: ./launcher OPTION
+Cloud-1 server configuration.
+
+  -f, --force-build          Rebuild images ignoring caches
+  -d, --deploy               Deploy server with Terraform
+  -c, --configure            Configure deployed server with Ansible
+      --configure-role=ROLE  Configure a specific service
+  -r  --rm                   Remove deployed server
+      --ssh-key              Path to ssh key private file to use (default: $SSH_KEY_DEFAULT)
+      --ssh-pubkey           Path to ssh key public file to use (default: $SSH_PUB_KEY_DEFAULT)
+  -v, --verbose              Set logs in verbose mode
+  -h, --help                 Print this message"
+}
+
+# *** VARIABLES ***
+TERR_NODE=terraform_node
+ANS_NODE=ansible_node
+
+SSH_KEY_DEFAULT="$HOME/.ssh/terraform_key"
+SSH_PUB_KEY_DEFAULT="$HOME/.ssh/terraform_key.pub"
+LOCAL_HOSTS_FILE="./playbooks/hosts.dat"
+REMOTE_HOSTS_FILE="/tmp/out/hosts.dat"
+
+setup_terraform_image() {
+    if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $TERR_NODE; then
+	echo -e "\n*** Setting Up Terraform Image ***"
+	docker build -f environment/terraform.Dockerfile . -t $TERR_NODE
+    fi
+}
+
+setup_ansible_image() {
+    if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $ANS_NODE; then
+	echo -e "\n*** Setting Up Ansible Image ***"
+	docker build -f environment/ansible.Dockerfile . -t $ANS_NODE
+    fi
+}
+
+wait_hosts_ssh_up() {
+    while read l; do
+	max_tries=5
+	while ! nc -z -w5 $l 22; do
+	    if (( max_tries == 0 )); then
+		echo "Host $l did not respond!" >&2
+		exit 1
+	    fi
+	    echo "[$l][$max_tries] Waiting for SSH..."
+	    (( max_tries-- ))
+	    sleep 2
+	done
+	echo "Host $l ssh port is up"
+    done < $LOCAL_HOSTS_FILE
+}
+
+for arg in "$@"; do
+    case "$arg" in
+	-f|--force-build) NOCACHE=--no-cache ;;
+	-d|--deploy)      DEPLOY=1  ;;
+	-c|--configure)   CONFIG=1  ;;
+	-r|--rm) RM=1 ;;
+	--ssh-key=*)
+	    SSH_KEY="${arg##*=}"
+	    ;;
+	--ssh-pubkey=*)
+	    SSH_PUB_KEY="${arg##*=}"
+	    ;;
+	--configure-role=*) 
+	    CONFIG=1
+	    ANSIBLE_ROLE="--tags ${arg##*=}"
+	    ;;
+	-v|--verbose)     
+	    if command -v cowsay >/dev/null; then
+		VERBOSE=1
+	    fi 
+	    ;;
+	-h|--help)
+	    print_usage; exit 0 
+	    ;;
+	*) 
+	    echo "Unknown argument: $arg" >&2
+	    print_usage >&2; exit 1 
+	    ;;
+    esac
+done
+
+if [ ! -z ${VERBOSE+x} ]; then
+    echo() {
+	builtin echo $@ | cowsay
+    }
+fi
+
+if [ ! -z ${RM+x} ] && [ ! -z ${DEPLOY+x} ]; then
+    echo "Incompatible flags: --deploy, --rm" >&2
+    print_usage >&2
+    exit 1
+fi
+
+if [ ! -z ${RM+x} ] && [ ! -z ${CONFIG+x} ]; then
+    echo "Incompatible flags: --configure, --rm" >&2
+    print_usage >&2
+    exit 1
+fi
+
+if [ ! -z ${RM+x} ]; then
+    setup_terraform_image
+
+    echo -e "\n*** Performing Terraform Remove ***"    
+    docker run \
+	   -v ${SSH_KEY:-$SSH_KEY_DEFAULT}:/tmp/.ssh/terraform_key \
+	   -v ${SSH_PUB_KEY:-$SSH_PUB_KEY_DEFAULT}:/tmp/.ssh/terraform_key.pub \
+	   -v ./terraform:/opt/app/terraform \
+	   $TERR_NODE apply \
+	   --destroy \
+	   --auto-approve \
+	   --var-file=terraform.tfvars
+    rm -f $LOCAL_HOSTS_FILE
+    exit 0
+fi
+
+if [ -z ${RM+x} ] && [ -z ${CONFIG+x} ] && [ -z ${DEPLOY+x} ]; then
+    DEPLOY=1
+    CONFIG=1
+fi
+
+if [ ${DEPLOY:-0} -ne 0 ]; then
+    if [ ! -f "terraform/terraform.tfvars" ]; then
+	echo "[ Error ] tfvars file not provided, exiting..." >&2
+	exit 1
+    fi
+
+    setup_terraform_image
+
+    echo -e "\n*** Performing Terraform Init ***"    
+    docker run \
+	   -v ${SSH_KEY:-$SSH_KEY_DEFAULT}:/tmp/.ssh/terraform_key \
+	   -v ${SSH_PUB_KEY:-$SSH_PUB_KEY_DEFAULT}:/tmp/.ssh/terraform_key.pub \
+	   -v ./terraform:/opt/app/terraform \
+	   $TERR_NODE init
+    echo -e "\n*** Performing Terraform Plan ***"    
+    docker run \
+	   -v ${SSH_KEY:-$SSH_KEY_DEFAULT}:/tmp/.ssh/terraform_key \
+	   -v ${SSH_PUB_KEY:-$SSH_PUB_KEY_DEFAULT}:/tmp/.ssh/terraform_key.pub \
+	   -v ./terraform:/opt/app/terraform \
+	   $TERR_NODE plan \
+	   --var-file=terraform.tfvars \
+	   --input=false
+    echo -e "\n*** Performing Terraform Apply ***"
+    [ -f $LOCAL_HOSTS_FILE ] || touch $LOCAL_HOSTS_FILE
+    docker run \
+	   -v ${SSH_KEY:-$SSH_KEY_DEFAULT}:/tmp/.ssh/terraform_key \
+	   -v ${SSH_PUB_KEY:-$SSH_PUB_KEY_DEFAULT}:/tmp/.ssh/terraform_key.pub \
+	   -v ./terraform:/opt/app/terraform \
+	   -v $LOCAL_HOSTS_FILE:$REMOTE_HOSTS_FILE \
+	   $TERR_NODE apply \
+	   --auto-approve \
+	   --var-file=terraform.tfvars
+fi
+
+if [ ${CONFIG:-0} -ne 0 ]; then
+    setup_ansible_image
+    wait_hosts_ssh_up
+
+    echo -e "\n*** Running Ansible ***"    
+    docker run --rm \
+	   -v ${SSH_KEY:-$SSH_KEY_DEFAULT}:/root/.ssh/id_ed25519 \
+	   -v ${SSH_PUB_KEY:-$SSH_PUB_KEY_DEFAULT}:/root/.ssh/id_ed25519.pub \
+	   -v ./playbooks:/playbooks \
+	   $ANS_NODE $ANSIBLE_ROLE
+fi
