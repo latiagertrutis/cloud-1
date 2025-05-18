@@ -1,15 +1,12 @@
-- name: Build Nginx
-  command: docker compose build --no-cache nginx
-  args:
-    chdir: site
-  tags:
-    - nginx
-    - services
-
 - name: Run Nginx
-  command: docker compose up -d --remove-orphans --wait --wait-timeout 60 --pull never nginx
-  args:
-    chdir: site
+  community.docker.docker_compose_v2:
+    services: nginx
+    wait: true
+    wait_timeout: 60
+    state: present
+    build: always
+    remove_orphans: true
+    project_src: "{{ ansible_env.HOME }}/site"
   tags:
     - nginx
     - services

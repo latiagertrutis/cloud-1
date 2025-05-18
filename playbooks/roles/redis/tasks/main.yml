@@ -1,15 +1,12 @@
-- name: Build Redis
-  command: docker compose build --no-cache redis
-  args:
-    chdir: site
-  tags:
-    - redis
-    - services
-
-- name: Run Redis
-  command: docker compose up -d --remove-orphans --wait --wait-timeout 60 --pull never redis
-  args:
-    chdir: site
+- name: Run Redis Server
+  community.docker.docker_compose_v2:
+    services: redis
+    wait: true
+    wait_timeout: 60
+    state: present
+    build: always
+    remove_orphans: true
+    project_src: "{{ ansible_env.HOME }}/site"
   tags:
     - redis
     - services
