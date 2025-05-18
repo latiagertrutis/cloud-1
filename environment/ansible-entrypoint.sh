@@ -11,6 +11,7 @@ usage() {
     echo "Options:"
     echo "  -b    Run the bootstrap playbook"
     echo "  -d    Run the deploy playbook"
+    echo "  -t    Specify tags to play"
     echo "  -h    Print this help"
     echo ""
     echo "If no options are provided, both bootstrap and deploy are executed by default."

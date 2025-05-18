@@ -69,7 +69,7 @@ for arg in "$@"; do
 	    ;;
 	--configure-role=*) 
 	    CONFIG=1
-	    ANSIBLE_ROLE="--tags ${arg##*=}"
+	    ANSIBLE_ROLE="-t ${arg##*=}"
 	    ;;
 	-v|--verbose)     
 	    if command -v cowsay >/dev/null; then
