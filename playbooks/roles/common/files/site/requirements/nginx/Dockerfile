@@ -6,6 +6,8 @@ ARG SSL_CERT SSL_CERT_KEY
 ENV SSL_CERT=${SSL_CERT}
 ENV SSL_CERT_KEY=${SSL_CERT_KEY}
 
+RUN echo 'Acquire::Retries "100";' > /etc/apt/apt.conf.d/80-retries
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     curl \

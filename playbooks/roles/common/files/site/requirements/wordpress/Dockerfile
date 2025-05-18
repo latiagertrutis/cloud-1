@@ -1,5 +1,7 @@
 FROM debian:11 AS unpack
 
+RUN echo 'Acquire::Retries "100";' > /etc/apt/apt.conf.d/80-retries
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -14,6 +16,8 @@ RUN tar -C / -zxvf /wordpress-6.7.2.tar.gz && rm -f /wordpress-6.7.2.tar.gz
 
 
 FROM debian:11
+
+RUN echo 'Acquire::Retries "100";' > /etc/apt/apt.conf.d/80-retries
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     php-fpm=2:7.4+76 \
