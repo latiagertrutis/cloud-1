@@ -1,12 +1,15 @@
+- name: Build Mariadb
+  command: docker compose build --no-cache mariadb
+  args:
+    chdir: site
+  tags:
+    - mariadb
+    - services
+
 - name: Run Mariadb
-  community.docker.docker_compose_v2:
-    services: mariadb
-    wait: true
-    wait_timeout: 60
-    state: present
-    build: always
-    remove_orphans: true
-    project_src: "{{ ansible_env.HOME }}/site"
+  command: docker compose up -d --remove-orphans --wait --wait-timeout 60 --pull never mariadb
+  args:
+    chdir: site
   tags:
     - mariadb
     - services
