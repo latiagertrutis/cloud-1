@@ -2,7 +2,7 @@ FROM debian:11 AS unpack
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Redis cache
 ADD https://downloads.wordpress.org/plugin/redis-cache.2.5.4.zip /
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfcgi-bin \
     php-mysqli \
     php-redis \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O /php-fpm-healthcheck \
     https://raw.githubusercontent.com/renatomefi/php-fpm-healthcheck/master/php-fpm-healthcheck \

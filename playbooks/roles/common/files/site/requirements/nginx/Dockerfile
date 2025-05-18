@@ -9,7 +9,7 @@ ENV SSL_CERT_KEY=${SSL_CERT_KEY}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
     curl \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY entrypoint.sh /
 RUN chmod +x entrypoint.sh
