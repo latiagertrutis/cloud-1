@@ -4,7 +4,7 @@
     wait: true
     wait_timeout: 60
     state: present
-    build: policy
+    build: always
     remove_orphans: true
     project_src: "{{ ansible_env.HOME }}/site"
   tags:

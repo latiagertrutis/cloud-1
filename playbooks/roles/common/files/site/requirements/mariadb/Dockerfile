@@ -1,10 +1,12 @@
 FROM debian:11
 
+RUN echo 'Acquire::Retries "100";' > /etc/apt/apt.conf.d/80-retries
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     mariadb-server \
     ca-certificates \
     wget \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O /healthcheck.sh \
     https://raw.githubusercontent.com/MariaDB/mariadb-docker/refs/heads/master/healthcheck.sh \
