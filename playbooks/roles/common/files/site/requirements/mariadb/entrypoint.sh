@@ -21,4 +21,6 @@ EOF
 # Needed because of volume mounting
 mariadb-install-db
 
+mysql -u root < /tmp/wordpress.sql
+
 exec "$@"
