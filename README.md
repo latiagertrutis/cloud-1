@@ -1,61 +1,42 @@
-# Ansible useful commands:
+# Cloud-1
 
-To build the control node:
+Automatic deploy of the inception project.
 
+## Getting started
+
+This project consists mainly in two parts: first a Terraform configuration which will automatically create any number of specified droplets (check `./config/terraform.tfvars`), then an Ansible script that will automatically configure, deploy and run the inception project (mariadb, wordpress and nginx).
+
+In order to wrap both functionalities in one single executable, the `launcher` script has been created:
 ```
-ansible-builder build --tag <container-name> --container-runtime docker
-```
+$ ./launcher -h
+Usage: ./launcher OPTION
+Cloud-1 server configuration.
 
-> IMPORTANT: use docker backend
+  -f, --force-build          Rebuild images ignoring caches
+  -d, --deploy               Deploy server with Terraform
+  -c, --configure            Configure deployed server with Ansible
+      --configure-role=ROLE  Configure a specific service
+  -r  --rm                   Remove deployed server
+      --ssh-key              Path to ssh key private file to use (default: /home/mateo/.ssh/terraform_key)
+      --ssh-pubkey           Path to ssh key public file to use (default: /home/mateo/.ssh/terraform_key.pub)
+  -v, --verbose              Set logs in verbose mode
+  -h, --help                 Print this message
+  ```
+  
+By default `launcher` will first run Terraform to provision the machines, and next Ansible in order to configure them. You can run both parts separately by calling `launcher -d` to only run Terraform. Or `launcher -c` to only run the Ansible bit.
 
-To run the controler node with the navigator:
+Four files are needed in order to be able to launch:
+* `.env`: The environment variables needed for inspection.
+* `key.pem` and `cert.pem`: The ssl key and certificate in order to run https.
+* `terraform.vars`: Terraform authentication and configuration parameters.
 
-```
-ansible-navigator run ./playbook.yml -i ./inventory.yml --ce docker --execution-environment-image <container-name> --mode stdout --pull-policy missing --container-options='<test-network>' --container-options='--user=0'
-```
-
-Notice:
-* `pull-policy` missing to only pull if the container does not exist.
-* `--container-options='<test-network>'`to have acces to the test containers in you host machine.
-* A separated `--container-options='--user=0'`to specify user.
-
-## Useful links
-Docker container management with Ansible
-- https://medium.com/@Oskarr3/docker-containers-with-ansible-89e98dacd1e2
-
-How to use Terraform with DigitalOcean
-- https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean
-
-
-## Set environment variables for a command, a good way
-
-Load variables from a .env
-```
-- name: Load .env as a fact
-  set_fact:
-    env_vars: "{{ lookup('ini', role_path + '/.env') }}"
-```
-
-or one by one
-```
-environment:
-  APP_ENV: "{{ lookup('ini', 'APP_ENV file=' + role_path + '/.env') }}"
-```
-
-Then use the fact to set the environment variables in the command
-```
-- name: Use env vars in a command
-  command: ./run-app.sh
-  environment:
-    APP_ENV: "{{ env_vars.APP_ENV }}"
-    DB_HOST: "{{ env_vars.DB_HOST }}"
-```
+All this files must be placed in `.config` directory and the `launcher` script will automatically copy them in their correspondent directories.
 
 ## Terraform docs
 An example of an expected variable configuration for Terraform can be found in `terraform/terraform.tfvars.example`.
 
 - **do_token**: DigitalOcean token, needed by terraform for DO API communication.
-- **pvt_key**: Path to the SSH private key file, must be mounted in some way into the terraform container.
+- **pvt_key**: Path to the SSH private key file. By default its value is `/tmp/.ssh/terraform_key` and should not be modified since the `launcher` script will automatically mount in this location the keys provided with the parameters `--ssh-pubkey` and `--ssh-key`.
 - **ssh_key_name**: Name of the SSH public key uploaded to DO, will be used for droplet comm.
 - **droplet_count**: Number of dropletes to be instanciated
 
