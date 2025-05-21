@@ -13,6 +13,7 @@ if [ -z "$(ls -A "$WORDPRESS_DIR")" ]; then
     # Make wp-contet owned by wordpress so plugins can write
     chown -R www-data:www-data /srv/www/wordpress/wp-content
     #Initialize the db
+    sed -i "s/<hostname>/$SITE_HOSTNAME/g" ./wordpress.sql
     mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -h mariadb -P 3306 < ./wordpress.sql
 fi
 

@@ -46,6 +46,7 @@ services:
     networks:
       - network1
     environment:
+      - SITE_HOSTNAME=${SITE_HOSTNAME?error}
       - MYSQL_USER=${MYSQL_USER?error}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD?error}
       - FCGI_CONNECT=wordpress:9000
