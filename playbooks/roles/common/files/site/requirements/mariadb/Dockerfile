@@ -14,7 +14,6 @@ RUN wget -O /healthcheck.sh \
 
 RUN mkdir -p /run/mysqld
 
-COPY wordpress.sql /tmp
 COPY entrypoint.sh /
 RUN chmod +x entrypoint.sh
 
