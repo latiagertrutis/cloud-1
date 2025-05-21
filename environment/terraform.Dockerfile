@@ -7,8 +7,6 @@ RUN curl -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.1.3/te
 
 FROM python:3.14-rc-alpine
 
-RUN apk add --no-cache curl
-
 COPY --from=build /usr/bin/terraform /usr/bin/terraform
 
 RUN mkdir -pv /opt/app/terraform
