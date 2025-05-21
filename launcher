@@ -25,6 +25,8 @@ SSH_PUB_KEY_DEFAULT="$HOME/.ssh/terraform_key.pub"
 LOCAL_HOSTS_FILE="./playbooks/hosts.dat"
 REMOTE_HOSTS_FILE="/tmp/out/hosts.dat"
 
+CONFIG_DIRECTORY="./.config"
+
 setup_terraform_image() {
     if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $TERR_NODE; then
 	echo -e "\n*** Setting Up Terraform Image ***"
@@ -54,6 +56,30 @@ wait_hosts_ssh_up() {
 	echo "Host $l ssh port is up"
     done < $LOCAL_HOSTS_FILE
 }
+
+setup_configuration_files() {
+    if [ ! -f $CONFIG_DIRECTORY/.env ] || [ ! -f $CONFIG_DIRECTORY/cert.pem ] || [ ! -f $CONFIG_DIRECTORY/key.pem ]; then
+    	echo "[ Error ] Missing essential configuration files in $CONFIG_DIRECTORY
+    
+Please, make sure the following files are present in the project:
+- $CONFIG_DIRECTORY/.env
+- $CONFIG_DIRECTORY/cert.pem
+- $CONFIG_DIRECTORY/key.pem
+" >&2
+    	exit 1
+    fi
+    
+    ROOT_SITE=./playbooks/roles/common/files/site
+
+    echo "Installing configuration files..."
+    rm -f $ROOT_SITE/.env \
+	&& cp $CONFIG_DIRECTORY/.env $ROOT_SITE/.env
+    rm -f $ROOT_SITE/requirements/nginx/cert.pem \
+	&& cp $CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
+    rm -f $ROOT_SITE/requirements/nginx/key.pem \
+	&& cp $CONFIG_DIRECTORY/key.pem $ROOT_SITE/requirements/nginx/key.pem
+}
+
 
 for arg in "$@"; do
     case "$arg" in
@@ -91,6 +117,8 @@ if [ ! -z ${VERBOSE+x} ]; then
 	builtin echo $@ | cowsay
     }
 fi
+
+setup_configuration_files
 
 if [ ! -z ${RM+x} ] && [ ! -z ${DEPLOY+x} ]; then
     echo "Incompatible flags: --deploy, --rm" >&2
