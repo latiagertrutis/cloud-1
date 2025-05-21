@@ -6,3 +6,9 @@
     recursive: true
   tags:
     - common
+
+- name: Actualize Env File With Host IP
+  shell: echo "SITE_HOSTNAME={{ ansible_host }}" >> .env
+  args:
+    executable: /bin/bash
+    chdir: "{{ ansible_env.HOME }}/site"
