@@ -25,7 +25,7 @@ SSH_PUB_KEY_DEFAULT="$HOME/.ssh/terraform_key.pub"
 LOCAL_HOSTS_FILE="./playbooks/hosts.dat"
 REMOTE_HOSTS_FILE="/tmp/out/hosts.dat"
 
-CONFIG_DIRECTORY=".config"
+CONFIG_DIRECTORY="./.config"
 
 setup_terraform_image() {
     if [ ! -z ${NOCACHE+x} ] || ! docker images | grep -q $TERR_NODE; then
@@ -69,13 +69,15 @@ Please, make sure the following files are present in the project:
     	exit 1
     fi
     
-    ROOT_SITE=playbooks/roles/common/files/site
-    CWD=$(pwd)
+    ROOT_SITE=./playbooks/roles/common/files/site
 
-	echo "Installing configuration files..."
-    ln -sf $CWD/$CONFIG_DIRECTORY/.env     $ROOT_SITE/.env
-    ln -sf $CWD/$CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
-    ln -sf $CWD/$CONFIG_DIRECTORY/key.pem  $ROOT_SITE/requirements/nginx/key.pem
+    echo "Installing configuration files..."
+    rm -f $ROOT_SITE/.env \
+	&& cp $CONFIG_DIRECTORY/.env $ROOT_SITE/.env
+    rm -f $ROOT_SITE/requirements/nginx/cert.pem \
+	&& cp $CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
+    rm -f $ROOT_SITE/requirements/nginx/key.pem \
+	&& cp $CONFIG_DIRECTORY/key.pem $ROOT_SITE/requirements/nginx/key.pem
 }
 
 
