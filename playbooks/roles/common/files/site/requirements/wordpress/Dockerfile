@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfcgi-bin \
     php-mysqli \
     php-redis \
+    default-mysql-client \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN wget -O /php-fpm-healthcheck \
@@ -42,6 +43,7 @@ COPY wp-config.php /
 COPY adminer-4.8.1.php /
 COPY --from=unpack /wordpress /wordpress
 COPY --from=unpack /redis-cache /redis-cache
+COPY wordpress.sql /tmp
 
 ENV WORDPRESS_DIR=/srv/www/wordpress
 WORKDIR /srv/www/wordpress
