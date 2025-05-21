@@ -25,10 +25,11 @@ echo "Initializating temporal mariaDB server..."
 mysqld --skip-networking --socket=/tmp/mariadbd.socket &
 
 max_retries=10
-while ! mariadb --socket=/tmp/mariadbd.socket -e "SELECT 1+1"; do
-    if ((max_retries)); then
+while ! mariadb --socket=/tmp/mariadbd.socket -e "SELECT 1+1" >/dev/null; do
+    if ((max_retries == 0)); then
         echo "mariaDB failed to start, exiting..." >&2
         exit 1
+    fi
     ((max_retries--))
     echo "Waiting on mariaDB temporal server to start..."
     sleep 3
