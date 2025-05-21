@@ -71,7 +71,8 @@ Please, make sure the following files are present in the project:
     
     ROOT_SITE=playbooks/roles/common/files/site
     CWD=$(pwd)
-	
+
+	echo "Installing configuration files..."
     ln -sf $CWD/$CONFIG_DIRECTORY/.env     $ROOT_SITE/.env
     ln -sf $CWD/$CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
     ln -sf $CWD/$CONFIG_DIRECTORY/key.pem  $ROOT_SITE/requirements/nginx/key.pem
