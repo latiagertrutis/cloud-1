@@ -70,10 +70,11 @@ Please, make sure the following files are present in the project:
     fi
     
     ROOT_SITE=playbooks/roles/common/files/site
-    
-    ln -sf $CONFIG_DIRECTORY/.env     $ROOT_SITE/.env
-    ln -sf $CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
-    ln -sf $CONFIG_DIRECTORY/key.pem  $ROOT_SITE/requirements/nginx/key.pem
+    CWD=$(pwd)
+	
+    ln -sf $CWD/$CONFIG_DIRECTORY/.env     $ROOT_SITE/.env
+    ln -sf $CWD/$CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
+    ln -sf $CWD/$CONFIG_DIRECTORY/key.pem  $ROOT_SITE/requirements/nginx/key.pem
 }
 
 
