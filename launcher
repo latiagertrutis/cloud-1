@@ -58,11 +58,15 @@ wait_hosts_ssh_up() {
 }
 
 setup_configuration_files() {
-    if [ ! -f $CONFIG_DIRECTORY/.env ] || [ ! -f $CONFIG_DIRECTORY/cert.pem ] || [ ! -f $CONFIG_DIRECTORY/key.pem ]; then
+    if [ ! -f $CONFIG_DIRECTORY/.env ] || \
+	   [ ! -f $CONFIG_DIRECTORY/terraform.tfvars ] || \
+	   [ ! -f $CONFIG_DIRECTORY/cert.pem ] || \
+	   [ ! -f $CONFIG_DIRECTORY/key.pem ]; then
     	echo "[ Error ] Missing essential configuration files in $CONFIG_DIRECTORY
     
 Please, make sure the following files are present in the project:
 - $CONFIG_DIRECTORY/.env
+- $CONFIG_DIRECTORY/terraform.tfvars
 - $CONFIG_DIRECTORY/cert.pem
 - $CONFIG_DIRECTORY/key.pem
 " >&2
@@ -74,6 +78,8 @@ Please, make sure the following files are present in the project:
     echo "Installing configuration files..."
     rm -f $ROOT_SITE/.env \
 	&& cp $CONFIG_DIRECTORY/.env $ROOT_SITE/.env
+    rm -f ./terraform/terraform.tfvars \
+	&& cp $CONFIG_DIRECTORY/terraform.tfvars ./terraform/terraform.tfvars
     rm -f $ROOT_SITE/requirements/nginx/cert.pem \
 	&& cp $CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
     rm -f $ROOT_SITE/requirements/nginx/key.pem \
