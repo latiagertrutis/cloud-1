@@ -3,7 +3,7 @@ resource "digitalocean_droplet" "cloud-1" {
 
   image = "ubuntu-20-04-x64"
   name = "cloud-1"
-  size = "s-1vcpu-1gb"
+  size = "s-1vcpu-512mb-10gb"
   region = "ams3"
   ssh_keys = [
     data.digitalocean_ssh_key.terraform.id

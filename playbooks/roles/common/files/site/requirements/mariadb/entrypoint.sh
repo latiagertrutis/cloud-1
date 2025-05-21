@@ -21,6 +21,23 @@ EOF
 # Needed because of volume mounting
 mariadb-install-db
 
-mysql -u root < /tmp/wordpress.sql
+echo "Initializating temporal mariaDB server..."
+mysqld --skip-networking --socket=/tmp/mariadbd.socket &
+
+max_retries=10
+while ! mariadb --socket=/tmp/mariadbd.socket -e "SELECT 1+1"; do
+    if ((max_retries)); then
+        echo "mariaDB failed to start, exiting..." >&2
+        exit 1
+    ((max_retries--))
+    echo "Waiting on mariaDB temporal server to start..."
+    sleep 3
+done
+
+echo "Installing Wordpress database..."
+mysql -u root --socket=/tmp/mariadbd.socket < /tmp/wordpress.sql
+
+echo "Shutting down temporal mariaDB server..."
+mysqladmin --socket=/tmp/mariadbd.socket shutdown
 
 exec "$@"
