@@ -10,8 +10,8 @@ Cloud-1 server configuration.
   -c, --configure            Configure deployed server with Ansible
       --configure-role=ROLE  Configure a specific service
   -r  --rm                   Remove deployed server
-      --ssh-key              Path to ssh key private file to use (default: $SSH_KEY_DEFAULT)
-      --ssh-pubkey           Path to ssh key public file to use (default: $SSH_PUB_KEY_DEFAULT)
+      --ssh-key=<pvt-key>    Path to ssh key private file to use (default: $SSH_KEY_DEFAULT)
+      --ssh-pubkey=<pub-key> Path to ssh key public file to use (default: $SSH_PUB_KEY_DEFAULT)
   -v, --verbose              Set logs in verbose mode
   -h, --help                 Print this message"
 }
