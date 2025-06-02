@@ -19,6 +19,4 @@
   roles:
     - common
     - mariadb
-    - redis
-    - wordpress
-    - nginx
+    - server

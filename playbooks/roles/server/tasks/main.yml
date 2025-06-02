@@ -1,6 +1,6 @@
-- name: Run Redis Server
+- name: Run Go Server
   community.docker.docker_compose_v2:
-    services: redis
+    services: server
     wait: true
     wait_timeout: 60
     state: present
@@ -8,5 +8,5 @@
     remove_orphans: true
     project_src: "{{ ansible_env.HOME }}/site"
   tags:
-    - redis
+    - server
     - services
