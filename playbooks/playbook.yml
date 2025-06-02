@@ -18,5 +18,5 @@
   hosts: remote
   roles:
     - common
-    - mariadb
+    # - mariadb
     - server
