@@ -1,0 +1,3 @@
+[submodule "playbooks/roles/common/files/site"]
+	path = playbooks/roles/common/files/site
+	url = git@github.com:latiagertrutis/my_server.git
