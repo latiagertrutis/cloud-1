@@ -80,10 +80,10 @@ Please, make sure the following files are present in the project:
 	&& cp $CONFIG_DIRECTORY/.env $ROOT_SITE/.env
     rm -f ./terraform/terraform.tfvars \
 	&& cp $CONFIG_DIRECTORY/terraform.tfvars ./terraform/terraform.tfvars
-    rm -f $ROOT_SITE/requirements/nginx/cert.pem \
-	&& cp $CONFIG_DIRECTORY/cert.pem $ROOT_SITE/requirements/nginx/cert.pem
-    rm -f $ROOT_SITE/requirements/nginx/key.pem \
-	&& cp $CONFIG_DIRECTORY/key.pem $ROOT_SITE/requirements/nginx/key.pem
+    rm -f $ROOT_SITE/cert.pem \
+	&& cp $CONFIG_DIRECTORY/cert.pem $ROOT_SITE
+    rm -f $ROOT_SITE/key.pem \
+	&& cp $CONFIG_DIRECTORY/key.pem $ROOT_SITE
 }
 
 
