@@ -3,3 +3,12 @@
 
 - name: Install Docker
   import_tasks: docker.yml
+
+
+- name: Install pip
+  apt:
+    name: python3-pip
+
+- name: Install MkDocs
+  pip:
+    name: mkdocs-material

@@ -1,0 +1,8 @@
+services:
+  docs:
+    hostname: mkdocs-material
+    image: squidfunk/mkdocs-material
+    container_name: mkdocs-material
+    command: build
+    volumes:
+      - .:/docs
