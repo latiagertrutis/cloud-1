@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 print_usage() {
     echo "Usage: ./launcher OPTION
@@ -202,5 +202,5 @@ if [ ${CONFIG:-0} -ne 0 ]; then
 	   -v ${SSH_KEY:-$SSH_KEY_DEFAULT}:/root/.ssh/id_ed25519 \
 	   -v ${SSH_PUB_KEY:-$SSH_PUB_KEY_DEFAULT}:/root/.ssh/id_ed25519.pub \
 	   -v ./playbooks:/playbooks \
-	   $ANS_NODE $ANSIBLE_ROLE
+	   $ANS_NODE -d ${DEPLOY:+-b} ${ANSIBLE_ROLE:-}
 fi
